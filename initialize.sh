@@ -1,39 +1,16 @@
-app_name=cryptkeeper
-django-admin startproject main
-cd main
+echo "Setting up virtual directory"
+python3 -m venv ./venv
+source ./venv/bin/activate
+pip install -r requirements.txt
+
+echo "Generating a random secret for django into [./main/secret_key.txt]"
+head /dev/urandom | LC_ALL=C tr -dc A-Za-z0-9 | head -c 40 > ./main/secret_key.txt
+
+echo "Migrating Database"
 python manage.py migrate
+
+echo "Creating super user for django admin login"
 python manage.py createsuperuser
 
-python manage.py startapp $app_name
-
-tee ./$app_name/views.py << END
-from django.http import HttpResponse
-
-def index(request):
-    return HttpResponse("Hello, world. You're at the index.")
-END
-
-
-tee ./$app_name/urls.py << END
-from django.urls import path
-
-from . import views
-
-urlpatterns = [
-    path('', views.index, name='index'),
-]
-END
-
-
-sed -i "s/admin.site.urls),/replace_string/" ./urls.py
-
-#Add site:
-#Domain name: 127.0.0.1:8000
-#Display name: 127.0.0.1:8000
-
-#Add social app
-#Provider: Google
-#Name: Google API
-#Client id: (generated at the end of Google API setup)
-#Secret key: (generated at the end of Google API setup)
-#Site: 127.0.0.1:8000
+echo "Starting web server. You can do this manually via debug is vscode or [python ./main/manage.py runserver]"
+python ./main/manage.py runserver
