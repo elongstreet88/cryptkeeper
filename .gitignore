@@ -10,7 +10,7 @@ __pycache__/
 .Python
 build/
 develop-eggs/
-dist/
+#dist/ - AdminLTE uses this
 downloads/
 eggs/
 .eggs/
@@ -130,3 +130,5 @@ dmypy.json
 
 # Ignore django secret key test file
 secret_key.txt
+
+.DS_Store

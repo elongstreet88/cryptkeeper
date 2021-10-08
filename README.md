@@ -20,6 +20,8 @@ FEATURES:
 ENHANCEMENTS:
 
 BUG FIXES:
+* `.gitignore` updates
+
 ---
 
 ## 0.1.1 (Oct 7, 2021)
