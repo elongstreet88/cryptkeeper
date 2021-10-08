@@ -11,6 +11,17 @@ No fluff, just simple transaction info.
 
 # Changelog
 
+## 0.2.0 (Oct 7, 2021)
+
+FEATURES:
+* `Adminlte3` theme loaded!
+* Structure adjusted a bit to be best practice
+
+ENHANCEMENTS:
+
+BUG FIXES:
+---
+
 ## 0.1.1 (Oct 7, 2021)
 
 FEATURES:
