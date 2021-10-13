@@ -14,5 +14,7 @@ class Transaction(models.Model):
     datetime                = models.DateTimeField()
     quantity                = models.DecimalField(max_digits=19, decimal_places=8)
 
+    readonly_fields = ["user"]
+
     def __str__(self):
         return f"{self.datetime} - {self.transaction_type} {self.quantity} {self.asset_symbol} for ${self.quantity * self.usd_price} at ${self.usd_price}/{self.asset_symbol}"

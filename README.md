@@ -11,6 +11,18 @@ No fluff, just simple transaction info.
 
 # Changelog
 
+## 0.3.0 (Oct 7, 2021)
+
+FEATURES:
+* Working user data association
+* Base template created.
+
+ENHANCEMENTS:
+
+BUG FIXES:
+
+---
+
 ## 0.2.0 (Oct 7, 2021)
 
 FEATURES:
