@@ -17,10 +17,17 @@ from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import TemplateView
 from django.contrib.auth.views import LogoutView
+from rest_framework import routers    
+
+from cryptkeeper.urls import *
+
+router = routers.DefaultRouter()
+router.register(r'transactions', TransactionViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
     path('logout', LogoutView.as_view()),
     path('', include('cryptkeeper.urls')),
+    path('api/', include(router.urls)),
 ]

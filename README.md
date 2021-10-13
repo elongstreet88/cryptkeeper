@@ -11,7 +11,19 @@ No fluff, just simple transaction info.
 
 # Changelog
 
-## 0.3.0 (Oct 7, 2021)
+## 0.4.0 (Oct 12, 2021)
+
+FEATURES:
+* Django Rest Framework wired up. Will need cleaned up arrangement
+* Basic user data filtered rest api added
+
+ENHANCEMENTS:
+
+BUG FIXES:
+
+---
+
+## 0.3.0 (Oct 12, 2021)
 
 FEATURES:
 * Working user data association
