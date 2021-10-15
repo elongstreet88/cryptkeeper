@@ -11,6 +11,20 @@ No fluff, just simple transaction info.
 
 # Changelog
 
+## 0.5.0 (Oct 14, 2021)
+
+FEATURES:
+* Datatables rest api with django wired up and working transactions page
+* TODO: Cleanup buttons and ajax crud from js
+* Added `from` an `to` for into model `transaction`
+
+ENHANCEMENTS:
+
+BUG FIXES:
+* Admin registration fix
+
+---
+
 ## 0.4.0 (Oct 12, 2021)
 
 FEATURES:

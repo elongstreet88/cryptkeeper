@@ -13,6 +13,8 @@ class Transaction(models.Model):
     usd_price               = models.DecimalField(max_digits=19, decimal_places=2)
     datetime                = models.DateTimeField()
     quantity                = models.DecimalField(max_digits=19, decimal_places=8)
+    transaction_from        = models.CharField(max_length=50)
+    transaction_to          = models.CharField(max_length=50)
 
     readonly_fields = ["user"]
 

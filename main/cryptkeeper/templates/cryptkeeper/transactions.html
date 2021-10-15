@@ -1,12 +1,145 @@
 {% extends "cryptkeeper/base.html" %}
+
 {% block content %}
 
 
-<form action="/transactions" method="post">
-    {% csrf_token %}
-    {{ form }}
-    <input type="submit" value="submit"></input>
-</form>
+<div class="card">
+    <div class="card-header">
+      <h3 class="card-title">Transactions</h3>
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body">
+        <table id="example1" class="table table-striped table-bordered" style="width:100%">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Asset</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>From</th>
+                <th>To</th>
+              </tr>
+            </thead>
+          </table>
+
+          <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-default">
+            Launch Default Modal
+          </button>
+
+
+            <div class="modal fade" id="modal-default" aria-hidden="true" style="display: none;">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h4 class="modal-title">Default Modal</h4>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="card-body">
+                              <div class="form-group">
+                                <label for="datetime">Date</label>
+                                <input type="text" class="form-control" id="edit_datetime" placeholder="">
+                              </div>
+                              <div class="form-group">
+                                <label for="transaction_type">Type</label>
+                                <input type="text" class="form-control" id="edit_transaction_type" placeholder="Buy or Sell">
+                              </div>
+                              <div class="form-group">
+                                <label for="exampleInputFile">File input</label>
+                                <div class="input-group">
+                                  <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="exampleInputFile">
+                                    <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+                                  </div>
+                                  <div class="input-group-append">
+                                    <span class="input-group-text">Upload</span>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                                <label class="form-check-label" for="exampleCheck1">Check me out</label>
+                              </div>
+                            </div>
+                          </form>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                      <button id="submit" type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                  </div>
+                  <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+              </div>
+        
+
+    </div>
+    <!-- /.card-body -->
+  </div>
+  <!-- /.card -->
+
+
+
+<script>
+  $(function () {
+    $(document).ready(function() {
+          var table = $('#example1').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+              "serverSide": true,
+              "ajax": "/api/transactions/?format=datatables",
+              "columns": [
+                  {"data": "datetime"},
+                  {"data": "transaction_type"},
+                  {"data": "asset_symbol"},
+                  {"data": "usd_price"},
+                  {"data": "quantity"},
+                  {"data": "transaction_from"},
+                  {"data": "transaction_to"},
+              ]
+          });
+
+        $('#example1').on('click', 'tr', function () {
+            $('#edit_datetime').val($('td', this).eq(0).text());
+            $('#edit_transaction_type').val($('td', this).eq(1).text());
+            $('#modal-default').modal("show");
+        });
+
+        $(function() {
+            $( "#edit_datetime" ).datepicker();
+        });
+
+
+        $(function() {
+            $('#submit').on('click', function(e) {
+                e.preventDefault();
+                $.ajax({
+                    type: "POST",
+                    url: "/api/transactions",
+                    data: $('form.tagForm').serialize(),
+                    success: function(response) {
+                        alert(response['response']);
+                    },
+                    error: function() {
+                        alert('Error');
+                    }
+                });
+                return false;
+            });
+        });
+
+      });
+
+  });
+</script>
+
 
 
 {% endblock %}

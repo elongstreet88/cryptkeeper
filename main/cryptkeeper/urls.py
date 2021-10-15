@@ -23,4 +23,5 @@ class TransactionViewSet(viewsets.ModelViewSet):
 urlpatterns = [
     path('', views.index, name='index'),
     path('hidden', views.hidden, name='hidden'),
+    path('transactions', views.transactions, name='transactions'),
 ]
