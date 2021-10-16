@@ -1,143 +1,225 @@
 {% extends "cryptkeeper/base.html" %}
-
 {% block content %}
-
 
 <div class="card">
     <div class="card-header">
-      <h3 class="card-title">Transactions</h3>
+        <h3 class="card-title">Transactions</h3>
     </div>
     <!-- /.card-header -->
     <div class="card-body">
-        <table id="example1" class="table table-striped table-bordered" style="width:100%">
+        <table id="table_transactions" class="table table-striped table-bordered" style="width:100%">
             <thead>
-              <tr>
-                <th>Date</th>
-                <th>Type</th>
-                <th>Asset</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>From</th>
-                <th>To</th>
-              </tr>
+                <tr>
+                    <th>ID</th>
+                    <th>Time (UTC)</th>
+                    <th>Type</th>
+                    <th>Asset</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>From</th>
+                    <th>To</th>
+                </tr>
             </thead>
-          </table>
+        </table>
 
-          <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-default">
+        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-default">
             Launch Default Modal
-          </button>
-
-
-            <div class="modal fade" id="modal-default" aria-hidden="true" style="display: none;">
-                <div class="modal-dialog">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h4 class="modal-title">Default Modal</h4>
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                      </button>
-                    </div>
-                    <div class="modal-body">
-                        <form>
-                            <div class="card-body">
-                              <div class="form-group">
-                                <label for="datetime">Date</label>
-                                <input type="text" class="form-control" id="edit_datetime" placeholder="">
-                              </div>
-                              <div class="form-group">
-                                <label for="transaction_type">Type</label>
-                                <input type="text" class="form-control" id="edit_transaction_type" placeholder="Buy or Sell">
-                              </div>
-                              <div class="form-group">
-                                <label for="exampleInputFile">File input</label>
-                                <div class="input-group">
-                                  <div class="custom-file">
-                                    <input type="file" class="custom-file-input" id="exampleInputFile">
-                                    <label class="custom-file-label" for="exampleInputFile">Choose file</label>
-                                  </div>
-                                  <div class="input-group-append">
-                                    <span class="input-group-text">Upload</span>
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                                <label class="form-check-label" for="exampleCheck1">Check me out</label>
-                              </div>
-                            </div>
-                          </form>
-                    </div>
-                    <div class="modal-footer justify-content-between">
-                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                      <button id="submit" type="button" class="btn btn-primary">Save changes</button>
-                    </div>
-                  </div>
-                  <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-              </div>
-        
+        </button>
 
     </div>
     <!-- /.card-body -->
-  </div>
-  <!-- /.card -->
+</div>
+<!-- /.card -->
+
+
+<!-- Edit Modal -->
+<div class="modal fade" id="modal-default" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Default Modal</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="edit_transaction">
+                    <div class="card-body">
+                        <input type="hidden" id="edit_id" value="" name="id">
+                        <div class="form-group">
+                            <label>Date and time:</label>
+                            <div class="input-group date" id="edit_datetime_popup" data-target-input="nearest">
+                                <div class="input-group-prepend" data-target="#edit_datetime_popup"
+                                    data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                </div>
+                                <input name="datetime" id="edit_datetime" type="text"
+                                    class="form-control datetimepicker-input" data-target="#edit_datetime_popup">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="transaction_type">Type</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-shopping-cart"></i>
+                                    </span>
+                                </div>
+                                <select name="transaction_type" id="edit_transaction_type" class="custom-select" required>
+                                    <option selected disabled>Select </option>
+                                    <option value="Buy">Buy</option>
+                                    <option value="Sell">Sell</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="asset_symbol">COIN</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="fa-regular fa-coins"></i>
+                                    </span>
+                                </div>
+                                <input name="asset_symbol" type="text" class="form-control" id="edit_asset_symbol"
+                                    placeholder="COIN Symbol">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="price">Price/Coin</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-dollar-sign"></i>
+                                    </span>
+                                </div>
+                                <input name="usd_price" type="text" class="form-control" id="edit_usd_price"
+                                    placeholder="Price per Coin at Purchase (USD)">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="quantity">Quantity</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-calculator"></i>
+                                    </span>
+                                </div>
+                                <input name="quantity" type="text" class="form-control" id="edit_quantity"
+                                    placeholder="Amount of coin purchased">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="from">From</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-wallet"></i>
+                                    </span>
+                                </div>
+                                <input name="transaction_from" type="text" class="form-control"
+                                    id="edit_transaction_from" placeholder="From">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="transaction_to">To</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-wallet"></i>
+                                    </span>
+                                </div>
+                                <input name="transaction_to" type="text" class="form-control" id="edit_transaction_to"
+                                    placeholder="To">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button id="submit" type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!--/Edit Modal -->
 
 
 
 <script>
-  $(function () {
-    $(document).ready(function() {
-          var table = $('#example1').DataTable({
-            dom: 'Bfrtip',
-            buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
-            ],
-              "serverSide": true,
-              "ajax": "/api/transactions/?format=datatables",
-              "columns": [
-                  {"data": "datetime"},
-                  {"data": "transaction_type"},
-                  {"data": "asset_symbol"},
-                  {"data": "usd_price"},
-                  {"data": "quantity"},
-                  {"data": "transaction_from"},
-                  {"data": "transaction_to"},
-              ]
-          });
-
-        $('#example1').on('click', 'tr', function () {
-            $('#edit_datetime').val($('td', this).eq(0).text());
-            $('#edit_transaction_type').val($('td', this).eq(1).text());
-            $('#modal-default').modal("show");
-        });
-
-        $(function() {
-            $( "#edit_datetime" ).datepicker();
-        });
-
-
-        $(function() {
-            $('#submit').on('click', function(e) {
-                e.preventDefault();
-                $.ajax({
-                    type: "POST",
-                    url: "/api/transactions",
-                    data: $('form.tagForm').serialize(),
-                    success: function(response) {
-                        alert(response['response']);
+    $(function () {
+        $(document).ready(function () {
+            var data_table = $('#table_transactions').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ],
+                "serverSide": true,
+                "ajax": "/api/transactions/?format=datatables",
+                "columns": [
+                    { "data": "id", "visible": false },
+                    {
+                        "data": "datetime", "render": function (data) {
+                            //return moment.utc(data).local().format('MM/DD/YYYY h:mm:ss A');
+                            return data
+                        }
                     },
-                    error: function() {
-                        alert('Error');
+                    { "data": "transaction_type" },
+                    { "data": "asset_symbol" },
+                    { "data": "usd_price" },
+                    { "data": "quantity" },
+                    { "data": "transaction_from" },
+                    { "data": "transaction_to" },
+                ]
+            });
+
+            $('#table_transactions').on('click', 'tbody tr', function () {
+                $('#edit_id').val(data_table.row(this).data().id);
+                $('#edit_datetime').val(data_table.row(this).data().datetime);
+                $('#edit_transaction_type').val(data_table.row(this).data().transaction_type);
+                $('#edit_asset_symbol').val(data_table.row(this).data().asset_symbol);
+                $('#edit_usd_price').val(data_table.row(this).data().usd_price);
+                $('#edit_quantity').val(data_table.row(this).data().quantity);
+                $('#edit_transaction_from').val(data_table.row(this).data().transaction_from);
+                $('#edit_transaction_to').val(data_table.row(this).data().transaction_to);
+                $('#modal-default').modal("show");
+            });
+
+            $('#edit_datetime_popup').datetimepicker({
+                useSeconds: true
+            });
+
+            $('#submit').on('click', function (e) {
+                e.preventDefault();
+                data = $('#edit_transaction').serialize()
+                $.ajax({
+                    headers: {'X-CSRFToken': "{{ csrf_token }}"},
+                    type: "PUT",
+                    url: "/api/transactions/" + $('#edit_id').val() + "/",
+                    data: $('#edit_transaction').serialize(),
+                    success: function (response) {
+                        $(document).Toasts('create', {
+                            class: 'bg-green',
+                            title: 'Success'
+                        })
+                    },
+                    error: function (xhr) {
+                        var err = JSON.parse(xhr.responseText);
+                        $(document).Toasts('create', {
+                            class: 'bg-maroon',
+                            title: 'Error',
+                            body: xhr.responseText
+                        })
                     }
                 });
                 return false;
             });
+
         });
 
-      });
-
-  });
+    });
 </script>
 
 

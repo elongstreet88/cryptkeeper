@@ -11,6 +11,19 @@ No fluff, just simple transaction info.
 
 # Changelog
 
+## 0.6.0 (Oct 16, 2021)
+
+FEATURES:
+* Working `put` example with toast
+* TODO: lock down the rest of the api methods and cleanup UI
+
+ENHANCEMENTS:
+
+BUG FIXES:
+* Admin registration fix
+
+---
+
 ## 0.5.0 (Oct 14, 2021)
 
 FEATURES:

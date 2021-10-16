@@ -19,7 +19,7 @@ from django.views.generic import TemplateView
 from django.contrib.auth.views import LogoutView
 from rest_framework import routers    
 
-from cryptkeeper.urls import *
+from cryptkeeper.api import *
 
 router = routers.DefaultRouter()
 router.register(r'transactions', TransactionViewSet)
