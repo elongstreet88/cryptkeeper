@@ -10,10 +10,8 @@ class TransactionSerializer(serializers.ModelSerializer):
 
     def create(self,validated_data):
         request = self.context['request']
-        user = request.user
-        transaction = Transaction.objects.create(value=validated_data['value'])
-        transaction.user = user
-        point.save()
+        transaction = Transaction.objects.create(**validated_data, user = request.user)
+        transaction.save()
         return transaction
 
 # ViewSets define the view behavior.
@@ -23,5 +21,4 @@ class TransactionViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        user = self.request.user
         return Transaction.objects.filter(user=self.request.user)

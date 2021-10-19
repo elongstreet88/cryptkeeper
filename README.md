@@ -11,6 +11,20 @@ No fluff, just simple transaction info.
 
 # Changelog
 
+## 0.7.0 (Oct 18, 2021)
+
+FEATURES:
+* `PUT`, `UPDATE`, `DELETE` all implemented
+* UI CRUD for transactions working
+* TODO: Cleanup JS and write tests
+
+ENHANCEMENTS:
+
+BUG FIXES:
+* Admin registration fix
+
+---
+
 ## 0.6.0 (Oct 16, 2021)
 
 FEATURES:
