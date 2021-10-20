@@ -11,6 +11,18 @@ No fluff, just simple transaction info.
 
 # Changelog
 
+## 0.8.0 (Oct 19, 2021)
+
+FEATURES:
+* Multi select on datatables working
+* Fixed some styling for datatables
+
+ENHANCEMENTS:
+
+BUG FIXES:
+
+---
+
 ## 0.7.0 (Oct 18, 2021)
 
 FEATURES:
@@ -21,7 +33,6 @@ FEATURES:
 ENHANCEMENTS:
 
 BUG FIXES:
-* Admin registration fix
 
 ---
 
@@ -34,7 +45,6 @@ FEATURES:
 ENHANCEMENTS:
 
 BUG FIXES:
-* Admin registration fix
 
 ---
 

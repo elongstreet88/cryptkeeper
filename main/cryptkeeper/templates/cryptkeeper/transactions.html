@@ -174,7 +174,11 @@
 </div>
 <!--/Edit Modal -->
 
-
+<style>
+    table.dataTable tbody tr.selected {
+  background-color: #1A1F24 !important;
+}
+</style>
 
 <script>
     $(function () {
@@ -184,6 +188,25 @@
                 dom: 'Bfrtip',
                 "serverSide": true,
                 "ajax": "/api/transactions/?format=datatables",
+                select: {
+                    style: 'multi+shift'
+                },
+                deferRender: true,
+                buttons: [
+                    'csv',
+                    'excel',
+                    'selectAll',
+                    'selectNone',
+                    {
+                        extend: 'selected',
+                        text: 'Delete Selected',
+                        action: function ( e, dt, node, config ) {
+                            var rows = dt.rows( { selected: true } ).count();
+            
+                            alert( 'There are '+rows+'(s) selected in the table' );
+                        }
+                    }
+                ],
                 "columns": [
                     { "data": "id", "visible": false },
                     {
