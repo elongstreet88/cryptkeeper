@@ -1,6 +1,9 @@
-from rest_framework import routers, serializers, viewsets
-from rest_framework import permissions
+from rest_framework import routers, serializers, viewsets, status, permissions, generics, mixins
+from rest_framework.response import Response
 from .models import *
+from io import StringIO
+
+### Transactions ###
 
 # Serializers define the API representation.
 class TransactionSerializer(serializers.ModelSerializer):
@@ -22,3 +25,19 @@ class TransactionViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Transaction.objects.filter(user=self.request.user)
+
+### File Importer ###
+class TransactionImporterSerializer(serializers.Serializer):
+    file = serializers.FileField()
+
+    class Meta:
+        fields = ('file')
+
+class TransactionImporterViewSet(viewsets.ViewSet):
+    serializer_class = TransactionImporterSerializer
+    
+    def create(self, request, *args, **kwargs):
+        file = request.FILES.get('file')
+        content_type = file.content_type
+        response = "POST API and you have uploaded a {} file".format(content_type)
+        return Response(response)

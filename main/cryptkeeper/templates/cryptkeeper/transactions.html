@@ -189,7 +189,8 @@
                 "serverSide": true,
                 "ajax": "/api/transactions/?format=datatables",
                 select: {
-                    style: 'multi+shift'
+                    style: 'multi+shift',
+                    selector: 'td:not(:last-child)'
                 },
                 deferRender: true,
                 buttons: [

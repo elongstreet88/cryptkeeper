@@ -1,8 +1,16 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework import routers  
 from . import views
+from . import api
+
+
+router = routers.DefaultRouter()
+router.register(r'transactions', api.TransactionViewSet)
+router.register(r'transaction-importer', api.TransactionImporterViewSet, basename='transaction-importer')
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('hidden', views.hidden, name='hidden'),
     path('transactions', views.transactions, name='transactions'),
+    path('transaction-importer', views.transaction_importer, name='transaction-importer'),
+    path('api/', include(router.urls)),
 ]

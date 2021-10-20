@@ -11,6 +11,19 @@ No fluff, just simple transaction info.
 
 # Changelog
 
+## 0.9.0 (Oct 19, 2021)
+
+FEATURES:
+* Multi select exclusion of last row to avoid buttons causing selection
+* Working upload API
+
+ENHANCEMENTS:
+
+BUG FIXES:
+* Removed .ds_store files
+
+---
+
 ## 0.8.0 (Oct 19, 2021)
 
 FEATURES:

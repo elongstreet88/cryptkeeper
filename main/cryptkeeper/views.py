@@ -13,5 +13,9 @@ def transactions(request):
     return render(request, 'cryptkeeper/transactions.html')
 
 @login_required
+def transaction_importer(request):
+    return render(request, 'cryptkeeper/transaction-importer.html')
+
+@login_required
 def hidden(request):
     return HttpResponse("Must be logged in!")
