@@ -11,6 +11,19 @@ No fluff, just simple transaction info.
 
 # Changelog
 
+## 0.10.0 (Oct 20, 2021)
+
+FEATURES:
+* Coinbase importer mockup working
+* `Fee` field added
+* Multi-select delete working on `transactions`
+
+ENHANCEMENTS:
+
+BUG FIXES:
+
+---
+
 ## 0.9.0 (Oct 19, 2021)
 
 FEATURES:

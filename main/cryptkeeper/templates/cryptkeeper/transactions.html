@@ -15,6 +15,7 @@
                     <th>Type</th>
                     <th>Asset</th>
                     <th>Price</th>
+                    <th>Fee</th>
                     <th>Quantity</th>
                     <th>From</th>
                     <th>To</th>
@@ -125,6 +126,18 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label for="usd_transaction_fee">Fee</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-dollar-sign"></i>
+                                    </span>
+                                </div>
+                                <input name="usd_transaction_fee" type="text" class="form-control" id="edit_usd_transaction_fee"
+                                    placeholder="Any fees">
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label for="quantity">Quantity</label>
                             <div class="input-group">
                                 <div class="input-group-prepend">
@@ -192,6 +205,7 @@
                     style: 'multi+shift',
                     selector: 'td:not(:last-child)'
                 },
+                pageLength: 100,
                 deferRender: true,
                 buttons: [
                     'csv',
@@ -202,9 +216,10 @@
                         extend: 'selected',
                         text: 'Delete Selected',
                         action: function ( e, dt, node, config ) {
-                            var rows = dt.rows( { selected: true } ).count();
+                            var rows = dt.rows( { selected: true } );
             
-                            alert( 'There are '+rows+'(s) selected in the table' );
+                            alert( 'There are '+rows.count()+'(s) selected in the table' );
+                            delete_all_rows(rows.data(), data_table)
                         }
                     }
                 ],
@@ -219,6 +234,7 @@
                     { "data": "transaction_type" },
                     { "data": "asset_symbol" },
                     { "data": "usd_price" },
+                    { "data": "usd_transaction_fee" },
                     { "data": "quantity" },
                     { "data": "transaction_from" },
                     { "data": "transaction_to" },
@@ -241,6 +257,7 @@
                 $('#edit_transaction_type').val(data.transaction_type);
                 $('#edit_asset_symbol').val(data.asset_symbol);
                 $('#edit_usd_price').val(data.usd_price);
+                $('#usd_transaction_fee').val(data.usd_price);
                 $('#edit_quantity').val(data.quantity);
                 $('#edit_transaction_from').val(data.transaction_from);
                 $('#edit_transaction_to').val(data.transaction_to);
@@ -325,6 +342,36 @@
             });
 
         });
+
+        //Delete all rows call
+        function delete_all_rows(rows, data_table)
+        {
+            for (var i = 0; i < rows.length; i++) {
+                $.ajax({
+                    headers: { 'X-CSRFToken': "{{ csrf_token }}" },
+                    data: null,
+                    type: "DELETE",
+                    url: "/api/transactions/" + rows[i].id,
+                    success: function (response) {
+                        $(document).Toasts('create', {
+                            class: 'bg-green',
+                            title: 'Success',
+                            autohide: true,
+                            delay: 2000
+                        })
+                        data_table.ajax.reload();
+                    },
+                    error: function (xhr) {
+                        $(document).Toasts('create', {
+                            class: 'bg-maroon',
+                            title: 'Error',
+                            body: xhr.responseText
+                        })
+                    }
+                });
+            }
+            
+        }
 
     });
 </script>

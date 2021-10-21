@@ -4,10 +4,12 @@ from django.utils.translation import gettext_lazy as _
 
 class Transaction(models.Model):
     class TransactionType(models.TextChoices):
-        FRESHMAN = 'Buy', _('Buy')
-        SOPHOMORE = 'Sell', _('Sell')
+        BUY = 'Buy', _('Buy')
+        SELL = 'Sell', _('Sell')
+        INTEREST = 'Interest', _('Interest')
 
-    transaction_type        = models.CharField(max_length=4,choices=TransactionType.choices)
+    transaction_type        = models.CharField(max_length=40,choices=TransactionType.choices)
+    usd_transaction_fee     = models.DecimalField(max_digits=19, decimal_places=2, null=True)
     user                    = models.ForeignKey(User, on_delete=models.CASCADE)
     asset_symbol            = models.CharField(max_length=50)
     usd_price               = models.DecimalField(max_digits=19, decimal_places=2)
