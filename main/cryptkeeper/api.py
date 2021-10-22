@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from .models import *
 from io import StringIO
 from .app_tools import parser_coinbase
+import json
 
 ### Transactions ###
 
@@ -41,5 +42,5 @@ class TransactionImporterViewSet(viewsets.ViewSet):
         file = request.FILES.get('file')
         content_type = file.content_type
         response = "POST API and you have uploaded a {} file".format(content_type)
-        parser_coinbase.get_transactions_from_csv(file, user=self.request.user)
-        return Response(response)
+        results = parser_coinbase.get_transactions_from_csv(file, user=self.request.user)
+        return Response(json.dumps(results))

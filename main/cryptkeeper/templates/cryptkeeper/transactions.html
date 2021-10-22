@@ -7,7 +7,7 @@
     </div>
     <!-- /.card-header -->
     <div class="card-body">
-        <table id="table_transactions" class="table table-bordered table-hover dataTable dtr-inline" style="width:100%">
+        <table id="table_transactions" class="table table-bordered table-hover table-striped dataTable dtr-inline" style="width:100%">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -187,6 +187,8 @@
 </div>
 <!--/Edit Modal -->
 
+
+<!-- Datatables highlight override for dark theme-->
 <style>
     table.dataTable tbody tr.selected {
   background-color: #1A1F24 !important;
@@ -241,9 +243,16 @@
                     {
                         "data": null,
                         "render": function (data, type, row) {
-                            b1 = '<a class="btn btn-app btn-info edit_item"><i class="fas fa-edit"></i></a>';
-                            b2 = '<a class="btn btn-app btn-danger delete_item"><i class="fas fa-trash-alt"></i></a>';
-                            return b1 + b2
+                            return `
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-default btn-info edit_item">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-default btn-danger delete_item">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                            `
                         }
                     }
                 ]
@@ -370,7 +379,6 @@
                     }
                 });
             }
-            
         }
 
     });

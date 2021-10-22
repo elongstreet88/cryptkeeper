@@ -11,6 +11,20 @@ No fluff, just simple transaction info.
 
 # Changelog
 
+## 0.11.0 (Oct 21, 2021)
+
+FEATURES:
+* API uploader front end converted to ajax
+* File importer returns row counts
+* Fixed icons
+* Mockup of charting on home page
+
+ENHANCEMENTS:
+
+BUG FIXES:
+
+---
+
 ## 0.10.0 (Oct 20, 2021)
 
 FEATURES:

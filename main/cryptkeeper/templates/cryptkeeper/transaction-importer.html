@@ -2,22 +2,69 @@
 
 {% block content %}
 
-<form action="/api/transaction-importer/" method="POST" enctype="multipart/form-data" class="form-horizontal" novalidate="">
-    <fieldset>
-        {% csrf_token %}
-        <div class="form-group ">
-            <label class="col-sm-2 control-label ">
-                File
-            </label>
-            <div class="col-sm-10">
-                <input name="file" type="file" value="">
-            </div>
-        </div>
-        <div class="form-actions">
-            <button class="btn btn-primary js-tooltip" title=""
-                data-original-title="Make a POST request on the Transaction Import Api resource">POST</button>
-        </div>
-    </fieldset>
-</form>
+
+
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Transactions</h3>
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body">
+        <form id="file_upload">
+            <fieldset>
+                {% csrf_token %}
+                <div class="form-group ">
+                    <label class="col-sm-2 control-label ">
+                        Coinbase CSV Importer
+                    </label>
+                    <div class="col-sm-10">
+                        <input name="file" type="file" value="">
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-primary js-tooltip" title=""
+                        data-original-title="Make a POST request on the Transaction Import Api resource">Import</button>
+                </div>
+            </fieldset>
+        </form> 
+    </div>
+    <!-- /.card-body -->
+</div>
+
+<script>
+     //Ajax file uploader
+     $("#file_upload").submit(function(evt){	 
+            evt.preventDefault();
+            var formData = new FormData($(this)[0]);
+            $.ajax({
+                url: '/api/transaction-importer/',
+                type: 'POST',
+                data: formData,
+                async: false,
+                cache: false,
+                contentType: false,
+                enctype: 'multipart/form-data',
+                processData: false,
+                success: function (response) {
+                    $(document).Toasts('create', {
+                        class: 'bg-green',
+                        title: 'Processed',
+                        body: response,
+                        autohide: true,
+                        delay: 5000
+                    })
+                },
+                error: function (xhr) {
+                    $(document).Toasts('create', {
+                        class: 'bg-maroon',
+                        title: 'Error',
+                        body: xhr.responseText
+                    })
+                }
+            });
+            return false;
+        });
+</script>
 
 {% endblock %}
