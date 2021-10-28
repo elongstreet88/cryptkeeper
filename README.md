@@ -11,6 +11,19 @@ No fluff, just simple transaction info.
 
 # Changelog
 
+## 0.12.0 (Oct 27, 2021)
+
+FEATURES:
+* Blockfi importer partially working
+* Added `import_hash` field to `transaction` to allow users to edit fields and re-importing doesn't override them
+* Added `delete all transcations` capability
+
+ENHANCEMENTS:
+
+BUG FIXES:
+
+---
+
 ## 0.11.0 (Oct 21, 2021)
 
 FEATURES:

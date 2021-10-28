@@ -19,6 +19,9 @@
                     <th>Quantity</th>
                     <th>From</th>
                     <th>To</th>
+                    <th>Notes</th>
+                    <th>Total (No Fees)</th>
+                    <th>Total (With Fees)</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -27,6 +30,10 @@
         <button id="add_transaction" type="button" class="btn btn-default" data-toggle="modal"
             data-target="#modal-edit">
             Add Transaction
+        </button>
+        <button id="delete_all_transactions" type="button" class="btn btn-default btn-danger" data-toggle="modal"
+            data-target="#modal_delete_all_transactions">
+            Delete All Transactions
         </button>
 
     </div>
@@ -173,6 +180,18 @@
                                     placeholder="To">
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label for="notes">Notes</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-wallet"></i>
+                                    </span>
+                                </div>
+                                <input name="notes" type="text" class="form-control" id="edit_notes"
+                                    placeholder="Notes about transaction">
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -187,6 +206,36 @@
 </div>
 <!--/Edit Modal -->
 
+
+<!-- Delete All Transactions Modal -->
+<div class="modal fade" id="modal_delete_all_transactions" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header btn-danger">
+                <h4 class="modal-title">Delete ALL Transactions</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="edit_transaction">
+                    <div class="card-body">
+                        <p>
+                            Are you sure you want to delete ALL transactions?
+                        </p>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button id="submit_delete_all_transactions" type="button" class="btn btn-danger" data-dismiss="modal">Delete All Transactions</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!--/Delete Modal -->
 
 <!-- Datatables highlight override for dark theme-->
 <style>
@@ -207,7 +256,7 @@
                     style: 'multi+shift',
                     selector: 'td:not(:last-child)'
                 },
-                pageLength: 100,
+                pageLength: 25,
                 deferRender: true,
                 buttons: [
                     'csv',
@@ -221,7 +270,7 @@
                             var rows = dt.rows( { selected: true } );
             
                             alert( 'There are '+rows.count()+'(s) selected in the table' );
-                            delete_all_rows(rows.data(), data_table)
+                            delete_all_rows(rows.data())
                         }
                     }
                 ],
@@ -240,6 +289,23 @@
                     { "data": "quantity" },
                     { "data": "transaction_from" },
                     { "data": "transaction_to" },
+                    { "data": "notes" },
+                    { 
+                        //Total no fees
+                        "data": null, 
+                        "render": function(data,type,row) { 
+                            var purchase_price = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(data["usd_price"] * data["quantity"])
+                            return (purchase_price)
+                        }
+                    },
+                    { 
+                        //Total with fees
+                        "data": null, 
+                        "render": function(data,type,row) { 
+                            var purchase_price = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format((data["usd_price"] * data["quantity"]) + data["usd_transaction_fee"])
+                            return (purchase_price)
+                        }
+                    },
                     {
                         "data": null,
                         "render": function (data, type, row) {
@@ -270,6 +336,7 @@
                 $('#edit_quantity').val(data.quantity);
                 $('#edit_transaction_from').val(data.transaction_from);
                 $('#edit_transaction_to').val(data.transaction_to);
+                $('#edit_notes').val(data.notes);
                 $('#modal-edit').modal("show");
             });
 
@@ -350,25 +417,53 @@
                 $("#edit_transaction").trigger("reset");
             });
 
-        });
+            //Delete all rows call
+            function delete_all_rows(rows)
+            {
+                for (var i = 0; i < rows.length; i++) {
+                    $.ajax({
+                        headers: { 'X-CSRFToken': "{{ csrf_token }}" },
+                        data: null,
+                        type: "DELETE",
+                        url: "/api/transactions/" + rows[i].id,
+                        success: function (response) {
+                            $(document).Toasts('create', {
+                                class: 'bg-green',
+                                title: 'Success',
+                                autohide: true,
+                                delay: 2000
+                            })
+                            $("#table_transactions").DataTable().ajax.reload();
+                        },
+                        error: function (xhr) {
+                            $(document).Toasts('create', {
+                                class: 'bg-maroon',
+                                title: 'Error',
+                                body: xhr.responseText
+                            })
+                        }
+                    });
+                }
+            }
 
-        //Delete all rows call
-        function delete_all_rows(rows, data_table)
-        {
-            for (var i = 0; i < rows.length; i++) {
+            //Delete all transactions
+            $('#submit_delete_all_transactions').on('click', function (e) {
+                    delete_all_transactions()
+            });
+
+            function delete_all_transactions()
+            {
                 $.ajax({
                     headers: { 'X-CSRFToken': "{{ csrf_token }}" },
                     data: null,
-                    type: "DELETE",
-                    url: "/api/transactions/" + rows[i].id,
+                    type: "GET",
+                    url: "/api/transactions/",
                     success: function (response) {
-                        $(document).Toasts('create', {
-                            class: 'bg-green',
-                            title: 'Success',
-                            autohide: true,
-                            delay: 2000
-                        })
-                        data_table.ajax.reload();
+                        delete_all_rows(response.results)
+                        if(response.next != "")
+                        {
+                            delete_all_transactions()
+                        }
                     },
                     error: function (xhr) {
                         $(document).Toasts('create', {
@@ -379,8 +474,8 @@
                     }
                 });
             }
-        }
 
+        });
     });
 </script>
 

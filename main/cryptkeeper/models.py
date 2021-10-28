@@ -14,9 +14,11 @@ class Transaction(models.Model):
     asset_symbol            = models.CharField(max_length=50)
     usd_price               = models.DecimalField(max_digits=19, decimal_places=2)
     datetime                = models.DateTimeField()
-    quantity                = models.DecimalField(max_digits=19, decimal_places=8)
+    quantity                = models.DecimalField(max_digits=19, decimal_places=10)
     transaction_from        = models.CharField(max_length=50)
     transaction_to          = models.CharField(max_length=50)
+    notes                   = models.CharField(max_length=200, null=True)
+    import_hash             = models.CharField(max_length=100, null=True)
 
     readonly_fields = ["user"]
 

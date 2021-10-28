@@ -2,7 +2,7 @@ from rest_framework import routers, serializers, viewsets, status, permissions, 
 from rest_framework.response import Response
 from .models import *
 from io import StringIO
-from .app_tools import parser_coinbase
+from .transaction_parsers import coinbase, blockfi
 import json
 
 ### Transactions ###
@@ -40,7 +40,8 @@ class TransactionImporterViewSet(viewsets.ViewSet):
 
     def create(self, request, *args, **kwargs):
         file = request.FILES.get('file')
-        content_type = file.content_type
-        response = "POST API and you have uploaded a {} file".format(content_type)
-        results = parser_coinbase.get_transactions_from_csv(file, user=self.request.user)
+        if file.name.startswith("Coinbase"):
+            results = coinbase.get_transactions_from_csv(file, user=self.request.user)
+        elif file.name.startswith("trade_report_all"):
+            results = blockfi.get_transactions_from_csv(file, user=self.request.user)
         return Response(json.dumps(results))
