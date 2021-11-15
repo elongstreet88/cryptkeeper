@@ -10,11 +10,11 @@ class Transaction(models.Model):
         SEND = 'Send', _('Send')
         AIRDROP = 'Airdrop', _('Airdrop')
 
-    transaction_type        = models.CharField(max_length=40,choices=TransactionType.choices)
-    usd_transaction_fee     = models.DecimalField(max_digits=19, decimal_places=2, null=True)
     user                    = models.ForeignKey(User, on_delete=models.CASCADE)
+    transaction_type        = models.CharField(max_length=40,choices=TransactionType.choices)
+    usd_fee                 = models.DecimalField(max_digits=19, decimal_places=2, null=True)
     asset_symbol            = models.CharField(max_length=50)
-    spot_price               = models.DecimalField(max_digits=19, decimal_places=2)
+    spot_price              = models.DecimalField(max_digits=19, decimal_places=2)
     datetime                = models.DateTimeField()
     quantity                = models.DecimalField(max_digits=19, decimal_places=10)
     transaction_from        = models.CharField(max_length=50)
@@ -64,7 +64,7 @@ class Transaction(models.Model):
             self.usd_total_no_fees = self.usd_total_with_fees
         else:
             self.usd_total_no_fees      = float(self.quantity) * float(self.spot_price) * -1
-            self.usd_total_with_fees    = self.usd_total_no_fees + float(self.usd_transaction_fee or 0)
+            self.usd_total_with_fees    = self.usd_total_no_fees + float(self.usd_fee or 0)
         
     readonly_fields = ["user"]
 

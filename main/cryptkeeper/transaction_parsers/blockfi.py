@@ -44,7 +44,7 @@ def process_trade(row, user, results):
         quantity            = row[4]
         transaction_from    = "Blockfi"
         transaction_to      = "Blockfi"
-        usd_transaction_fee = None
+        usd_fee = None
         notes               = row[0]
 
         result = tools.create_transaction(
@@ -55,7 +55,7 @@ def process_trade(row, user, results):
             quantity            = quantity,
             transaction_from    = transaction_from,
             transaction_to      = transaction_to,
-            usd_transaction_fee = usd_transaction_fee,
+            usd_fee = usd_fee,
             notes               = notes,
             user                = user,
         )
@@ -76,7 +76,7 @@ def process_trade(row, user, results):
         quantity            = row[2]
         transaction_from    = "Blockfi"
         transaction_to      = "Blockfi"
-        usd_transaction_fee = None
+        usd_fee = None
         notes               = row[0]
 
         result = tools.create_transaction(
@@ -87,7 +87,7 @@ def process_trade(row, user, results):
             quantity            = quantity,
             transaction_from    = transaction_from,
             transaction_to      = transaction_to,
-            usd_transaction_fee = usd_transaction_fee,
+            usd_fee = usd_fee,
             notes               = notes,
             user                = user,
         )
@@ -106,7 +106,7 @@ def parse_transaction_type(data):
         return "Buy"
     return data
     
-def parse_usd_transaction_fee(data):
+def parse_usd_fee(data):
     if data == "" or data == "0" or data == "0.00":
         return None
     return data

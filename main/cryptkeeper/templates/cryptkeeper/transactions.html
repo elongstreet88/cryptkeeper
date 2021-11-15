@@ -133,14 +133,14 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="usd_transaction_fee">Fee</label>
+                            <label for="usd_fee">Fee</label>
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">
                                         <i class="fas fa-dollar-sign"></i>
                                     </span>
                                 </div>
-                                <input name="usd_transaction_fee" type="text" class="form-control" id="edit_usd_transaction_fee"
+                                <input name="usd_fee" type="text" class="form-control" id="edit_usd_fee"
                                     placeholder="Any fees">
                             </div>
                         </div>
@@ -292,7 +292,7 @@
                     { "data": "transaction_type" },
                     { "data": "asset_symbol" },
                     { "data": "spot_price" },
-                    { "data": "usd_transaction_fee" },
+                    { "data": "usd_fee" },
                     { "data": "quantity" },
                     { "data": "transaction_from" },
                     { "data": "transaction_to" },
@@ -325,7 +325,7 @@
                 $('#edit_transaction_type').val(data.transaction_type);
                 $('#edit_asset_symbol').val(data.asset_symbol);
                 $('#edit_spot_price').val(data.spot_price);
-                $('#usd_transaction_fee').val(data.spot_price);
+                $('#usd_fee').val(data.spot_price);
                 $('#edit_quantity').val(data.quantity);
                 $('#edit_transaction_from').val(data.transaction_from);
                 $('#edit_transaction_to').val(data.transaction_to);

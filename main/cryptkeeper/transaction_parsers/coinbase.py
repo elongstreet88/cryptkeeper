@@ -49,7 +49,7 @@ def process_transactions(row):
     transaction["quantity"]             = parse_quantity(row[3], transaction_type = transaction["transaction_type"])
     transaction["transaction_from"]     = parse_transaction_from(row, transaction["transaction_type"])
     transaction["transaction_to"]       = parse_transaction_to(row, transaction["transaction_type"])
-    transaction["usd_transaction_fee"]  = parse_usd_transaction_fee(row[8])
+    transaction["usd_fee"]  = parse_usd_fee(row[8])
     transaction["notes"]                = row[9]
 
     return [transaction]
@@ -63,7 +63,7 @@ def process_transactions_convert(row):
     sell_transaction["quantity"]             = float(row[3]) * -1
     sell_transaction["transaction_from"]     = "Coinbase"
     sell_transaction["transaction_to"]       = "USD"
-    sell_transaction["usd_transaction_fee"]  = parse_usd_transaction_fee(row[8])
+    sell_transaction["usd_fee"]  = parse_usd_fee(row[8])
     sell_transaction["notes"]                = row[9]
 
     buy_transaction = {}
@@ -74,7 +74,7 @@ def process_transactions_convert(row):
     buy_transaction["datetime"]             = row[0]
     buy_transaction["transaction_from"]     = "USD"
     buy_transaction["transaction_to"]       = "Coinbase"
-    buy_transaction["usd_transaction_fee"]  = None
+    buy_transaction["usd_fee"]  = None
     buy_transaction["notes"]                = row[9]
 
     return [sell_transaction, buy_transaction]
@@ -82,7 +82,7 @@ def process_transactions_convert(row):
 def parse_transaction_type(data):
     return tools.get_transaction_type(data)
     
-def parse_usd_transaction_fee(data):
+def parse_usd_fee(data):
     if data == "" or data == "0" or data == "0.00":
         return None
     return float(data) * float(-1)
