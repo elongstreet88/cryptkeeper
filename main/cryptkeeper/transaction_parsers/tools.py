@@ -4,6 +4,8 @@ import sys
 from typing import Dict, Any
 import hashlib
 import json
+import csv
+from io import StringIO
 
 def create_import_transaction(transaction_type, asset_symbol, usd_price, datetime, quantity, transaction_from, transaction_to, usd_transaction_fee, notes, user):
     """
@@ -48,3 +50,28 @@ def get_hash_from_dict(dictionary: Dict[str, Any]) -> str:
     encoded = json.dumps(dictionary, sort_keys=True).encode()
     dhash.update(encoded)
     return dhash.hexdigest()
+
+def get_csv_data(in_memory_file, skip_first_lines=0):
+    file = in_memory_file.read().decode('utf-8')
+    csv_data = csv.reader(StringIO(file), delimiter=',')
+
+    #Custom - Skip the first line
+    for x in range(skip_first_lines):
+        csv_data.__next__()
+
+    return csv_data
+
+def get_transaction_type(type_name):
+
+    types = {
+        "Buy": Transaction.TransactionType.BUY,
+        "Sell": Transaction.TransactionType.SELL,
+        "Send": Transaction.TransactionType.SEND,
+        "Coinbase Earn": Transaction.TransactionType.AIRDROP,
+        "Rewards Income": Transaction.TransactionType.INTEREST,
+    }
+
+    if type_name in types:
+        return types[type_name]
+
+    return type_name

@@ -7,6 +7,8 @@ class Transaction(models.Model):
         BUY = 'Buy', _('Buy')
         SELL = 'Sell', _('Sell')
         INTEREST = 'Interest', _('Interest')
+        SEND = 'Send', _('Send')
+        AIRDROP = 'Airdrop', _('Airdrop')
 
     transaction_type        = models.CharField(max_length=40,choices=TransactionType.choices)
     usd_transaction_fee     = models.DecimalField(max_digits=19, decimal_places=2, null=True)
@@ -19,7 +21,51 @@ class Transaction(models.Model):
     transaction_to          = models.CharField(max_length=50)
     notes                   = models.CharField(max_length=200, null=True)
     import_hash             = models.CharField(max_length=100, null=True)
+    #calculated fields
+    usd_total_no_fees       = models.DecimalField(max_digits=19, decimal_places=2, null=True)
+    usd_total_with_fees     = models.DecimalField(max_digits=19, decimal_places=2, null=True)
 
+    
+
+    
+
+    def save(self, *args, **kwargs):
+        self.process_calculated_fields()
+        super(Transaction, self).save(*args, **kwargs)
+
+    def process_calculated_fields(self):
+        #Examples:
+
+        #Sell
+        # quant: -5
+        # cost $100
+        # fee -$5
+        # usd_total_no_fee == (quant * cost * -1) + fee == $495
+
+        #Buy
+        # quant: 5
+        # cost $100
+        # fee -$5
+        # usd_total_no_fee == (quant * cost * -1) + fee == -$505
+
+        #Send
+        # quant: 5
+        # cost $100
+        # fee -$5
+        # usd_total_no_fee == fee == -$5
+
+        if (
+            self.transaction_type == self.TransactionType.SEND or 
+            self.transaction_type == self.TransactionType.INTEREST or 
+            self.transaction_type == self.TransactionType.AIRDROP
+        ):
+            # Total is always zero + fees
+            self.usd_total_no_fees = 0
+            self.usd_total_no_fees = self.usd_total_with_fees
+        else:
+            self.usd_total_no_fees      = float(self.quantity) * float(self.usd_price) * -1
+            self.usd_total_with_fees    = self.usd_total_no_fees + float(self.usd_transaction_fee or 0)
+        
     readonly_fields = ["user"]
 
     def __str__(self):

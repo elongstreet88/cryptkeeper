@@ -272,16 +272,23 @@
                             alert( 'There are '+rows.count()+'(s) selected in the table' );
                             delete_all_rows(rows.data())
                         }
-                    }
+                    },
+                    {
+                        "extend": 'csv',
+                        "text": 'CSV (All Records)',
+                        "titleAttr": 'CSV',                               
+                        "action": newexportaction
+                    },
+                    {
+                        "extend": 'excel',
+                        "text": 'Excel (All Records)',
+                        "titleAttr": 'Excel',                               
+                        "action": newexportaction
+                    },
                 ],
                 "columns": [
                     { "data": "id", "visible": false },
-                    {
-                        "data": "datetime", "render": function (data) {
-                            //return moment.utc(data).local().format('MM/DD/YYYY h:mm:ss A');
-                            return data
-                        }
-                    },
+                    { "data": "datetime" },
                     { "data": "transaction_type" },
                     { "data": "asset_symbol" },
                     { "data": "usd_price" },
@@ -290,22 +297,8 @@
                     { "data": "transaction_from" },
                     { "data": "transaction_to" },
                     { "data": "notes" },
-                    { 
-                        //Total no fees
-                        "data": null, 
-                        "render": function(data,type,row) { 
-                            var purchase_price = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(data["usd_price"] * data["quantity"])
-                            return (purchase_price)
-                        }
-                    },
-                    { 
-                        //Total with fees
-                        "data": null, 
-                        "render": function(data,type,row) { 
-                            var purchase_price = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format((data["usd_price"] * data["quantity"]) + data["usd_transaction_fee"])
-                            return (purchase_price)
-                        }
-                    },
+                    { "data": "usd_total_no_fees" },
+                    { "data": "usd_total_with_fees" },
                     {
                         "data": null,
                         "render": function (data, type, row) {
@@ -418,7 +411,7 @@
             });
 
             //Delete all rows call
-            function delete_all_rows(rows)
+            function delete_all_rows(rows, hide_results)
             {
                 for (var i = 0; i < rows.length; i++) {
                     $.ajax({
@@ -427,20 +420,26 @@
                         type: "DELETE",
                         url: "/api/transactions/" + rows[i].id,
                         success: function (response) {
-                            $(document).Toasts('create', {
-                                class: 'bg-green',
-                                title: 'Success',
-                                autohide: true,
-                                delay: 2000
-                            })
-                            $("#table_transactions").DataTable().ajax.reload();
+                            if (!hide_results)
+                            {
+                                $(document).Toasts('create', {
+                                    class: 'bg-green',
+                                    title: 'Success',
+                                    autohide: true,
+                                    delay: 2000
+                                })
+                                $("#table_transactions").DataTable().ajax.reload();
+                            }
                         },
                         error: function (xhr) {
-                            $(document).Toasts('create', {
-                                class: 'bg-maroon',
-                                title: 'Error',
-                                body: xhr.responseText
-                            })
+                            if (!hide_results)
+                            {
+                                $(document).Toasts('create', {
+                                    class: 'bg-maroon',
+                                    title: 'Error',
+                                    body: xhr.responseText
+                                })
+                            }
                         }
                     });
                 }
@@ -459,7 +458,7 @@
                     type: "GET",
                     url: "/api/transactions/",
                     success: function (response) {
-                        delete_all_rows(response.results)
+                        delete_all_rows(response.results, false)
                         if(response.next != "")
                         {
                             delete_all_transactions()
@@ -474,6 +473,55 @@
                     }
                 });
             }
+
+
+            /* For Export Buttons available inside jquery-datatable "server side processing" - Start
+            - due to "server side processing" jquery datatble doesn't support all data to be exported
+            - below function makes the datatable to export all records when "server side processing" is on */
+
+            function newexportaction(e, dt, button, config) {
+                var self = this;
+                var oldStart = dt.settings()[0]._iDisplayStart;
+                dt.one('preXhr', function (e, s, data) {
+                    // Just this once, load all data from the server...
+                    data.start = 0;
+                    data.length = 2147483647;
+                    dt.one('preDraw', function (e, settings) {
+                        // Call the original action function
+                        if (button[0].className.indexOf('buttons-copy') >= 0) {
+                            $.fn.dataTable.ext.buttons.copyHtml5.action.call(self, e, dt, button, config);
+                        } else if (button[0].className.indexOf('buttons-excel') >= 0) {
+                            $.fn.dataTable.ext.buttons.excelHtml5.available(dt, config) ?
+                                $.fn.dataTable.ext.buttons.excelHtml5.action.call(self, e, dt, button, config) :
+                                $.fn.dataTable.ext.buttons.excelFlash.action.call(self, e, dt, button, config);
+                        } else if (button[0].className.indexOf('buttons-csv') >= 0) {
+                            $.fn.dataTable.ext.buttons.csvHtml5.available(dt, config) ?
+                                $.fn.dataTable.ext.buttons.csvHtml5.action.call(self, e, dt, button, config) :
+                                $.fn.dataTable.ext.buttons.csvFlash.action.call(self, e, dt, button, config);
+                        } else if (button[0].className.indexOf('buttons-pdf') >= 0) {
+                            $.fn.dataTable.ext.buttons.pdfHtml5.available(dt, config) ?
+                                $.fn.dataTable.ext.buttons.pdfHtml5.action.call(self, e, dt, button, config) :
+                                $.fn.dataTable.ext.buttons.pdfFlash.action.call(self, e, dt, button, config);
+                        } else if (button[0].className.indexOf('buttons-print') >= 0) {
+                            $.fn.dataTable.ext.buttons.print.action(e, dt, button, config);
+                        }
+                        dt.one('preXhr', function (e, s, data) {
+                            // DataTables thinks the first item displayed is index 0, but we're not drawing that.
+                            // Set the property to what it was before exporting.
+                            settings._iDisplayStart = oldStart;
+                            data.start = oldStart;
+                        });
+                        // Reload the grid with the original page. Otherwise, API functions like table.cell(this) don't work properly.
+                        setTimeout(dt.ajax.reload, 0);
+                        // Prevent rendering of the full data to the DOM
+                        return false;
+                    });
+                });
+                // Requery the server with the new one-time export settings
+                dt.ajax.reload();
+            };
+
+
 
         });
     });
