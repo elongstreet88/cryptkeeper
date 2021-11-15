@@ -11,6 +11,20 @@ No fluff, just simple transaction info.
 
 # Changelog
 
+## 0.13.0 (Nov 14, 2021)
+
+FEATURES:
+* Refactor coinbase importer to support convert
+* Added type `send` and `airdrop`
+* Added export all for transcations
+
+
+ENHANCEMENTS:
+
+BUG FIXES:
+
+---
+
 ## 0.12.0 (Oct 27, 2021)
 
 FEATURES:
