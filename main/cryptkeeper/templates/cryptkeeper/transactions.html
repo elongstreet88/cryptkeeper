@@ -145,14 +145,14 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="quantity">Quantity</label>
+                            <label for="asset_quantity">Quantity</label>
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">
                                         <i class="fas fa-calculator"></i>
                                     </span>
                                 </div>
-                                <input name="quantity" type="text" class="form-control" id="edit_quantity"
+                                <input name="asset_quantity" type="text" class="form-control" id="edit_asset_quantity"
                                     placeholder="Amount of coin purchased">
                             </div>
                         </div>
@@ -293,7 +293,7 @@
                     { "data": "asset_symbol" },
                     { "data": "spot_price" },
                     { "data": "usd_fee" },
-                    { "data": "quantity" },
+                    { "data": "asset_quantity" },
                     { "data": "transaction_from" },
                     { "data": "transaction_to" },
                     { "data": "notes" },
@@ -326,7 +326,7 @@
                 $('#edit_asset_symbol').val(data.asset_symbol);
                 $('#edit_spot_price').val(data.spot_price);
                 $('#usd_fee').val(data.spot_price);
-                $('#edit_quantity').val(data.quantity);
+                $('#edit_asset_quantity').val(data.asset_quantity);
                 $('#edit_transaction_from').val(data.transaction_from);
                 $('#edit_transaction_to').val(data.transaction_to);
                 $('#edit_notes').val(data.notes);

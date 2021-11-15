@@ -46,7 +46,7 @@ def process_transactions(row):
     transaction["asset_symbol"]         = row[2]
     transaction["spot_price"]            = row[5]
     transaction["datetime"]             = row[0]
-    transaction["quantity"]             = parse_quantity(row[3], transaction_type = transaction["transaction_type"])
+    transaction["asset_quantity"]             = parse_asset_quantity(row[3], transaction_type = transaction["transaction_type"])
     transaction["transaction_from"]     = parse_transaction_from(row, transaction["transaction_type"])
     transaction["transaction_to"]       = parse_transaction_to(row, transaction["transaction_type"])
     transaction["usd_fee"]  = parse_usd_fee(row[8])
@@ -60,7 +60,7 @@ def process_transactions_convert(row):
     sell_transaction["asset_symbol"]         = row[2]
     sell_transaction["spot_price"]            = row[5]
     sell_transaction["datetime"]             = row[0]
-    sell_transaction["quantity"]             = float(row[3]) * -1
+    sell_transaction["asset_quantity"]             = float(row[3]) * -1
     sell_transaction["transaction_from"]     = "Coinbase"
     sell_transaction["transaction_to"]       = "USD"
     sell_transaction["usd_fee"]  = parse_usd_fee(row[8])
@@ -68,9 +68,9 @@ def process_transactions_convert(row):
 
     buy_transaction = {}
     buy_transaction["transaction_type"]     = "Buy"
-    buy_transaction["quantity"]             = float(row[9].split(" ")[-2])
+    buy_transaction["asset_quantity"]             = float(row[9].split(" ")[-2])
     buy_transaction["asset_symbol"]         = row[9].split(" ")[-1]
-    buy_transaction["spot_price"]            = float(row[5]) * float(row[3]) / buy_transaction["quantity"]
+    buy_transaction["spot_price"]            = float(row[5]) * float(row[3]) / buy_transaction["asset_quantity"]
     buy_transaction["datetime"]             = row[0]
     buy_transaction["transaction_from"]     = "USD"
     buy_transaction["transaction_to"]       = "Coinbase"
@@ -112,7 +112,7 @@ def negative_transaction(value, transaction_type):
         return float(value) * float(-1)
     return value
 
-def parse_quantity(value, transaction_type):
+def parse_asset_quantity(value, transaction_type):
     if transaction_type == "Sell" or transaction_type == "Send":
         return float(-1) * float(value)
 

@@ -16,7 +16,7 @@ class Transaction(models.Model):
     asset_symbol            = models.CharField(max_length=50)
     spot_price              = models.DecimalField(max_digits=19, decimal_places=2)
     datetime                = models.DateTimeField()
-    quantity                = models.DecimalField(max_digits=19, decimal_places=10)
+    asset_quantity                = models.DecimalField(max_digits=19, decimal_places=10)
     transaction_from        = models.CharField(max_length=50)
     transaction_to          = models.CharField(max_length=50)
     notes                   = models.CharField(max_length=200, null=True)
@@ -63,10 +63,10 @@ class Transaction(models.Model):
             self.usd_total_no_fees = 0
             self.usd_total_no_fees = self.usd_total_with_fees
         else:
-            self.usd_total_no_fees      = float(self.quantity) * float(self.spot_price) * -1
+            self.usd_total_no_fees      = float(self.asset_quantity) * float(self.spot_price) * -1
             self.usd_total_with_fees    = self.usd_total_no_fees + float(self.usd_fee or 0)
         
     readonly_fields = ["user"]
 
     def __str__(self):
-        return f"{self.datetime} - {self.transaction_type} {self.quantity} {self.asset_symbol} for ${self.quantity * self.spot_price} at ${self.spot_price}/{self.asset_symbol}"
+        return f"{self.datetime} - {self.transaction_type} {self.asset_quantity} {self.asset_symbol} for ${self.asset_quantity * self.spot_price} at ${self.spot_price}/{self.asset_symbol}"

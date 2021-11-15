@@ -41,7 +41,7 @@ def process_trade(row, user, results):
         asset_symbol        = row[7]
         spot_price           = float(row[4]) / (float(row[2]) * float(row[6])) #Sold Quantity / (Buy quant * Rate ammount)
         datetime            = row[1]
-        quantity            = row[4]
+        asset_quantity            = row[4]
         transaction_from    = "Blockfi"
         transaction_to      = "Blockfi"
         usd_fee = None
@@ -52,7 +52,7 @@ def process_trade(row, user, results):
             asset_symbol        = asset_symbol,
             spot_price           = spot_price,
             datetime            = datetime,
-            quantity            = quantity,
+            asset_quantity            = asset_quantity,
             transaction_from    = transaction_from,
             transaction_to      = transaction_to,
             usd_fee = usd_fee,
@@ -73,7 +73,7 @@ def process_trade(row, user, results):
         asset_symbol        = row[3]
         spot_price           = row[6]
         datetime            = row[1]
-        quantity            = row[2]
+        asset_quantity            = row[2]
         transaction_from    = "Blockfi"
         transaction_to      = "Blockfi"
         usd_fee = None
@@ -84,7 +84,7 @@ def process_trade(row, user, results):
             asset_symbol        = asset_symbol,
             spot_price           = spot_price,
             datetime            = datetime,
-            quantity            = quantity,
+            asset_quantity            = asset_quantity,
             transaction_from    = transaction_from,
             transaction_to      = transaction_to,
             usd_fee = usd_fee,
