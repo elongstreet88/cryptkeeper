@@ -11,6 +11,11 @@ No fluff, just simple transaction info.
 
 # Changelog
 
+## 0.14.0 (Nov 14, 2021)
+
+FEATURES:
+* Rename `price` field
+
 ## 0.13.0 (Nov 14, 2021)
 
 FEATURES:

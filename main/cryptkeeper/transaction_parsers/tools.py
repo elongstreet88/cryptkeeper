@@ -7,18 +7,17 @@ import json
 import csv
 from io import StringIO
 
-def create_import_transaction(transaction_type, asset_symbol, usd_price, datetime, quantity, transaction_from, transaction_to, usd_transaction_fee, notes, user):
+def create_import_transaction(transaction_type, asset_symbol, spot_price, datetime, quantity, transaction_from, transaction_to, usd_transaction_fee, notes, user):
     """
     Generic wrapper for creating a transaction back to the database.
     If the transaction already exists, it will NOT create it, but report it as already existing.
-    TODO: Add a hash field to compare in case the target has changed, aka manual overwrite, we preserve it
     """
     try:
         #Splat the fields so we don't have to type them out twice
         transaction = {
             "transaction_type"    : transaction_type,
             "asset_symbol"        : asset_symbol,
-            "usd_price"           : usd_price,
+            "spot_price"           : spot_price,
             "datetime"            : datetime,
             "quantity"            : quantity,
             "transaction_from"    : transaction_from,

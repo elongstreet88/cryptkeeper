@@ -39,7 +39,7 @@ def process_trade(row, user, results):
     try:
         transaction_type    = "Sell"
         asset_symbol        = row[7]
-        usd_price           = float(row[4]) / (float(row[2]) * float(row[6])) #Sold Quantity / (Buy quant * Rate ammount)
+        spot_price           = float(row[4]) / (float(row[2]) * float(row[6])) #Sold Quantity / (Buy quant * Rate ammount)
         datetime            = row[1]
         quantity            = row[4]
         transaction_from    = "Blockfi"
@@ -50,7 +50,7 @@ def process_trade(row, user, results):
         result = tools.create_transaction(
             transaction_type    = transaction_type,
             asset_symbol        = asset_symbol,
-            usd_price           = usd_price,
+            spot_price           = spot_price,
             datetime            = datetime,
             quantity            = quantity,
             transaction_from    = transaction_from,
@@ -71,7 +71,7 @@ def process_trade(row, user, results):
     try:
         transaction_type    = "Buy"
         asset_symbol        = row[3]
-        usd_price           = row[6]
+        spot_price           = row[6]
         datetime            = row[1]
         quantity            = row[2]
         transaction_from    = "Blockfi"
@@ -82,7 +82,7 @@ def process_trade(row, user, results):
         result = tools.create_transaction(
             transaction_type    = transaction_type,
             asset_symbol        = asset_symbol,
-            usd_price           = usd_price,
+            spot_price           = spot_price,
             datetime            = datetime,
             quantity            = quantity,
             transaction_from    = transaction_from,

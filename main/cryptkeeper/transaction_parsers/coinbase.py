@@ -44,7 +44,7 @@ def process_transactions(row):
     transaction = {}
     transaction["transaction_type"]     = parse_transaction_type(row[1])
     transaction["asset_symbol"]         = row[2]
-    transaction["usd_price"]            = row[5]
+    transaction["spot_price"]            = row[5]
     transaction["datetime"]             = row[0]
     transaction["quantity"]             = parse_quantity(row[3], transaction_type = transaction["transaction_type"])
     transaction["transaction_from"]     = parse_transaction_from(row, transaction["transaction_type"])
@@ -58,7 +58,7 @@ def process_transactions_convert(row):
     sell_transaction = {}
     sell_transaction["transaction_type"]     = "Sell"
     sell_transaction["asset_symbol"]         = row[2]
-    sell_transaction["usd_price"]            = row[5]
+    sell_transaction["spot_price"]            = row[5]
     sell_transaction["datetime"]             = row[0]
     sell_transaction["quantity"]             = float(row[3]) * -1
     sell_transaction["transaction_from"]     = "Coinbase"
@@ -70,7 +70,7 @@ def process_transactions_convert(row):
     buy_transaction["transaction_type"]     = "Buy"
     buy_transaction["quantity"]             = float(row[9].split(" ")[-2])
     buy_transaction["asset_symbol"]         = row[9].split(" ")[-1]
-    buy_transaction["usd_price"]            = float(row[5]) * float(row[3]) / buy_transaction["quantity"]
+    buy_transaction["spot_price"]            = float(row[5]) * float(row[3]) / buy_transaction["quantity"]
     buy_transaction["datetime"]             = row[0]
     buy_transaction["transaction_from"]     = "USD"
     buy_transaction["transaction_to"]       = "Coinbase"
