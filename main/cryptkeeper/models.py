@@ -9,6 +9,7 @@ class Transaction(models.Model):
         INTEREST = 'Interest', _('Interest')
         SEND = 'Send', _('Send')
         AIRDROP = 'Airdrop', _('Airdrop')
+        RECEIVE = 'Receive', _('Receive')
 
     user                    = models.ForeignKey(User, on_delete=models.CASCADE)
     transaction_type        = models.CharField(max_length=40,choices=TransactionType.choices)
@@ -16,10 +17,10 @@ class Transaction(models.Model):
     asset_symbol            = models.CharField(max_length=50)
     spot_price              = models.DecimalField(max_digits=19, decimal_places=2)
     datetime                = models.DateTimeField()
-    asset_quantity                = models.DecimalField(max_digits=19, decimal_places=10)
+    asset_quantity          = models.DecimalField(max_digits=19, decimal_places=10)
     transaction_from        = models.CharField(max_length=50)
     transaction_to          = models.CharField(max_length=50)
-    notes                   = models.CharField(max_length=200, null=True)
+    notes                   = models.CharField(max_length=1000, null=True)
     import_hash             = models.CharField(max_length=100, null=True)
     #calculated fields
     usd_total_no_fees       = models.DecimalField(max_digits=19, decimal_places=2, null=True)

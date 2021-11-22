@@ -2,9 +2,6 @@
 
 {% block content %}
 
-
-
-
 <div class="card">
     <div class="card-header">
         <h3 class="card-title">Transactions</h3>
@@ -16,7 +13,12 @@
                 {% csrf_token %}
                 <div class="form-group ">
                     <label class="col-sm-2 control-label ">
-                        Coinbase CSV Importer
+                        Transaction Importer
+                        <ul> Currently Supports:
+                            <li>Coinbase</li>
+                            <li>Blockfi - Trading</li>
+                            <li>Blockfi - All Transactions</li>
+                        </ul>
                     </label>
                     <div class="col-sm-10">
                         <input name="file" type="file" value="">

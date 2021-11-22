@@ -11,10 +11,28 @@ No fluff, just simple transaction info.
 
 # Changelog
 
+## 0.15.0 (Oct 27, 2021)
+
+FEATURES:
+* `crypto_price_finder` added for historical price lookup, no api key required
+  * Note: It is running off of coinbase's public API with throttling (around 10/second). Should be fine for light workloads
+* Blockfi `blockfi_all_transactions` importer created. Should fully cover all blockfi transactions if you upload both reports
+
+ENHANCEMENTS:
+* Added better auto-detection for reports
+* Expanded `notes` field to 1000 characters
+
+BUG FIXES:
+* Bad included for `dotmap` which is no longer used
+
+---
+
 ## 0.14.0 (Nov 14, 2021)
 
 FEATURES:
 * Rename transaction fields
+
+---
 
 ## 0.13.0 (Nov 14, 2021)
 

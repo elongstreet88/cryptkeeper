@@ -2,7 +2,7 @@ from rest_framework import routers, serializers, viewsets, status, permissions, 
 from rest_framework.response import Response
 from .models import *
 from io import StringIO
-from .transaction_parsers import coinbase, blockfi
+from .transaction_parsers import tools
 import json
 
 ### Transactions ###
@@ -39,9 +39,13 @@ class TransactionImporterViewSet(viewsets.ViewSet):
     serializer_class = TransactionImporterSerializer
 
     def create(self, request, *args, **kwargs):
-        file = request.FILES.get('file')
-        if file.name.startswith("Coinbase"):
-            results = coinbase.get_transactions_from_csv(file, user=self.request.user)
-        elif file.name.startswith("trade_report_all"):
-            results = blockfi.get_transactions_from_csv(file, user=self.request.user)
+        file        = request.FILES.get('file')
+        file_name   = file.name
+
+        results = tools.process_transactions_from_file(
+            file_name       = file_name, 
+            in_memory_file  = file, 
+            user            = self.request.user
+        )
+
         return Response(json.dumps(results))
