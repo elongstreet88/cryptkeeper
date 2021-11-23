@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.16.1 (Nov 23, 2021)
+
+FEATURES:
+
+ENHANCEMENTS:
+
+BUG FIXES:
+* /api rooted incorrectly
+
+---
+
+
 ## 0.16.0 (Nov 23, 2021)
 
 FEATURES:

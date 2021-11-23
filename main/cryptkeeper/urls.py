@@ -14,6 +14,3 @@ urlpatterns = [
     path('transaction-importer', views.transaction_importer, name='transaction-importer'),
     path('api/', include(router.urls)),
 ]
-
-
-urlpatterns += router.urls
