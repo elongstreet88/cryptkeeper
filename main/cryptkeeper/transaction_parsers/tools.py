@@ -8,6 +8,7 @@ import csv
 from io import StringIO
 from . import coinbase, blockfi_all_transactions, blockfi_trading
 from ..core.crypto_price_finder import crypto_price_finder
+from datetime import datetime
 
 def create_import_transaction(transaction_type, asset_symbol, spot_price, datetime, asset_quantity, transaction_from, transaction_to, usd_fee, notes, user):
     """
@@ -93,7 +94,7 @@ def process_transactions_from_file(file_name, in_memory_file, user):
 def process_missing_spot_price(transaction):
     # Get price from chain
     success, spot_price = crypto_price_finder.get_usd_price(
-        datetime_string = transaction["datetime"], 
+        datetime        = datetime.fromisoformat(transaction["datetime"]),
         asset_symbol    = transaction["asset_symbol"]
     )
     if success:

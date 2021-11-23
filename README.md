@@ -11,6 +11,7 @@ The goal of this project is to provide an open source web based portfolio manage
 
 # Tech Stack
 - Django
+- Django Rest Framework
 - Python
 - Javascript
 - HTML5
@@ -20,6 +21,7 @@ The goal of this project is to provide an open source web based portfolio manage
 - AdminLTE 3 (aka the best html5 theme out there)
 
 # Features
+- All data endpoints are available on `http://localhost:8000/api`
 - Self contained (no external dependencies besides coinbase api call for price lookups)
 - No API keys required (for now)
 - Transaction Importers for
@@ -30,6 +32,14 @@ The goal of this project is to provide an open source web based portfolio manage
 - Simple data tables with full export
 - Auth on by default (google auth can be turned on, local django auth works fine too)
 - Forever free, always open source
+
+# API
+- Browsable (mostly) API
+  - http://localhost:8000/api
+- Realtime and historical price lookup:
+  - http://localhost:8000/api/spot-price/btc/2021-04-30-15-15-30/
+- Transactions
+  - http://localhost:8000/api/transactions
 
 # How to support
 - PR requests always welcome

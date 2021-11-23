@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.16.0 (Nov 23, 2021)
+
+FEATURES:
+* Spot price API frontend created
+* Added support for more time formats to DRF
+
+ENHANCEMENTS:
+
+BUG FIXES:
+---
+
 ## 0.15.1 (Nov 22, 2021)
 
 FEATURES:

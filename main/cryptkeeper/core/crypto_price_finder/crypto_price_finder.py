@@ -2,21 +2,27 @@ import pandas_datareader as web
 from datetime import datetime, timedelta
 import requests
 
-def get_usd_price(datetime_string, asset_symbol):
+def get_usd_price(asset_symbol, datetime):
     pair = f"{asset_symbol}-usd"
 
-    initial = datetime.fromisoformat(datetime_string)
+    start = datetime + timedelta(0,-30) # Backwards 30 seconds
+    end   = datetime + timedelta(0,30) # Forward 30 seconds
 
-    start = initial + timedelta(0,-30) # Backwards 30 seconds
-    end   = initial + timedelta(0,30) # Forward 30 seconds
+    #Cleanup Format
+    start_string = start.strftime('%Y-%m-%dT%H:%M:%S')
+    end_string   = end.strftime('%Y-%m-%dT%H:%M:%S')
 
-    url = f"https://api.exchange.coinbase.com/products/{pair}/candles?granularity=60&start={start}&end={end}"
+    #Ex: https://api.exchange.coinbase.com/products/btc-usd/candles?granularity=60&start=2020-04-30%2015:15:00&end=2020-04-30%2015:16:00
+    url = f"https://api.exchange.coinbase.com/products/{pair}/candles?granularity=60&start={start_string}&end={end_string}"
     headers = {"Accept": "application/json"}
     response = requests.request("GET", url, headers=headers)
     data = response.json()
 
-    if len(data) == 0:
+    if response.status_code != 200:
         return False, 0
+
+    if len(data) == 0:
+        return True, "Not found"
 
     price_open = float(data[0][1])
     price_close = float(data[0][2])
