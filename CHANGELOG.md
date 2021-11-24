@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.17.0 (Nov 24, 2021)
+
+FEATURES:
+* Added CryptKeeper csv importer
+  * This is akin to a backup, export the CSV from transactions and you can import it back in on the importer page
+
+ENHANCEMENTS:
+* Fixed some decimal logic and moved validators a bit
+* TODO: DFR seems to 
+
+BUG FIXES:
+
+Known Issues:
+* DFR won't trim trailing zeros from the API and it causes so strangeness. Had to increase zeros for now.
+
+---
+
+
 ## 0.16.1 (Nov 23, 2021)
 
 FEATURES:
@@ -10,7 +28,6 @@ BUG FIXES:
 * /api rooted incorrectly
 
 ---
-
 
 ## 0.16.0 (Nov 23, 2021)
 

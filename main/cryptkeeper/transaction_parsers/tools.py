@@ -6,9 +6,10 @@ import hashlib
 import json
 import csv
 from io import StringIO
-from . import coinbase, blockfi_all_transactions, blockfi_trading
+from . import coinbase, blockfi_all_transactions, blockfi_trading, cryptkeeper
 from ..core.crypto_price_finder import crypto_price_finder
 from datetime import datetime
+from dateutil import parser
 
 def create_import_transaction(transaction_type, asset_symbol, spot_price, datetime, asset_quantity, transaction_from, transaction_to, usd_fee, notes, user):
     """
@@ -17,15 +18,16 @@ def create_import_transaction(transaction_type, asset_symbol, spot_price, dateti
     """
     try:
         #Splat the fields so we don't have to type them out twice
+        #The hard coding of the decimals could be done better.
         transaction = {
             "transaction_type"  : transaction_type,
             "asset_symbol"      : asset_symbol,
-            "spot_price"        : spot_price,
-            "datetime"          : datetime,
-            "asset_quantity"    : asset_quantity,
+            "spot_price"        : round(float(spot_price), 10),
+            "datetime"          : parser.parse(datetime).strftime("%Y-%m-%dT%H:%M:%S"),
+            "asset_quantity"    : round(float(asset_quantity), 10),
             "transaction_from"  : transaction_from,
             "transaction_to"    : transaction_to,
-            "usd_fee"           : usd_fee,
+            "usd_fee"           : round(float(usd_fee),10) if usd_fee != "" and usd_fee != None else None,
             "notes"             : notes
         }
         transaction["import_hash"] = get_hash_from_dict(transaction)
@@ -79,6 +81,10 @@ def get_transaction_type(type_name):
     return type_name
 
 def process_transactions_from_file(file_name, in_memory_file, user):
+    #CryptKeeper
+    if cryptkeeper.file_matches_importer(file_name, in_memory_file):
+        return cryptkeeper.process_transactions_from_file(in_memory_file, user)
+
     #Coinbase
     if coinbase.file_matches_importer(file_name, in_memory_file):
         return coinbase.process_transactions_from_file(in_memory_file, user)
