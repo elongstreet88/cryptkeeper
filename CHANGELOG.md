@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.17.1 (Nov 24, 2021)
+
+FEATURES:
+
+ENHANCEMENTS:
+* Converted coinbase importer to be more standard
+
+BUG FIXES:
+* Fixed more rounding oddness
+* Fixed `./initialize.sh` to actually work
+
+---
+
+
 ## 0.17.0 (Nov 24, 2021)
 
 FEATURES:

@@ -4,7 +4,6 @@ from io import StringIO
 from ..models import Transaction
 import logging
 from . import tools
-from dateutil import parser
 
 #
 # ID	

@@ -11,7 +11,7 @@ def file_matches_importer(file_name, in_memory_file):
     return False
 
 def process_transactions_from_file(in_memory_file, user):
-    #CSV Reader
+    #Open up CSV for read
     file = in_memory_file.read().decode('utf-8')
     csv_data = csv.reader(StringIO(file), delimiter=',')
 
@@ -40,84 +40,106 @@ def process_transactions_from_file(in_memory_file, user):
     return results
 
 def process_transactions(row):
-    #Special Cases
-    if row[1] == "Convert":
-        return process_transactions_convert(row)
+    if row[1] == "Buy":
+        return process_transactions_buy(row)
 
-    #Universal Parser
+    if row[1] == "Send":
+        return process_transactions_send(row)
+
+    if row[1] == "Coinbase Earn":
+        return process_transaction_airdrop(row)
+
+    if row[1] == "Rewards Income":
+        return process_transaction_interest(row)
+
+    if row[1] == "Convert":
+        return process_transaction_convert(row)
+
+    raise Exception(f"Transaction type [{row[8]}] not registered")
+
+def process_transactions_buy(row):
     transaction = {}
-    transaction["transaction_type"]     = parse_transaction_type(row[1])
+    transaction["transaction_type"]     = "Buy"
     transaction["asset_symbol"]         = row[2]
-    transaction["spot_price"]           = row[5]
+    transaction["spot_price"]           = row[4]
     transaction["datetime"]             = row[0]
-    transaction["asset_quantity"]       = parse_asset_quantity(row[3], transaction_type = transaction["transaction_type"])
-    transaction["transaction_from"]     = parse_transaction_from(row, transaction["transaction_type"])
-    transaction["transaction_to"]       = parse_transaction_to(row, transaction["transaction_type"])
-    transaction["usd_fee"]              = parse_usd_fee(row[8])
-    transaction["notes"]                = row[9]
+    transaction["asset_quantity"]       = row[3]
+    transaction["transaction_from"]     = "USD"
+    transaction["transaction_to"]       = "Coinbase"
+    transaction["usd_fee"]              = float(row[7] or 0) * -1
+    transaction["notes"]                = row[8]
 
     return [transaction]
 
-def process_transactions_convert(row):
+def process_transactions_send(row):
+    transaction = {}
+    transaction["transaction_type"]     = "Send"
+    transaction["asset_symbol"]         = row[2]
+    transaction["spot_price"]           = row[4]
+    transaction["datetime"]             = row[0]
+    transaction["asset_quantity"]       = float(row[3]) * -1
+    transaction["transaction_from"]     = "Coinbase"
+    #Example: "2021-05-10T09:34:28Z	Send	ETH	0.0232917	4111.51				Sent 0.0232917 ETH to 0x60732F1Cd7d3830bBC71a6FA10CF557ce943C87f"
+    transaction["transaction_to"]       = row[8].split(" ")[-1]
+    transaction["usd_fee"]              = None
+    transaction["notes"]                = row[8]
+
+    #Custom Warning
+    transaction["notes"]               += ". [Warning]: Unable to determine the type of send automatically. This could be a taxable event."
+
+    return [transaction]
+
+def process_transaction_airdrop(row):
+    transaction = {}
+    transaction["transaction_type"]     = "Airdrop"
+    transaction["asset_symbol"]         = row[2]
+    transaction["spot_price"]           = row[4]
+    transaction["datetime"]             = row[0]
+    transaction["asset_quantity"]       = float(row[3])
+    transaction["transaction_from"]     = "Coinbase"
+    transaction["transaction_to"]       = "Coinbase"
+    transaction["usd_fee"]              = None
+    transaction["notes"]                = row[8]
+
+    return [transaction]
+
+def process_transaction_interest(row):
+    transaction = {}
+    transaction["transaction_type"]     = "Interest"
+    transaction["asset_symbol"]         = row[2]
+    transaction["spot_price"]           = row[4]
+    transaction["datetime"]             = row[0]
+    transaction["asset_quantity"]       = float(row[3])
+    transaction["transaction_from"]     = "Coinbase"
+    transaction["transaction_to"]       = "Coinbase"
+    transaction["usd_fee"]              = None
+    transaction["notes"]                = row[8]
+
+    return [transaction]
+
+def process_transaction_convert(row):
     sell_transaction = {}
     sell_transaction["transaction_type"]     = "Sell"
     sell_transaction["asset_symbol"]         = row[2]
-    sell_transaction["spot_price"]           = row[5]
+    sell_transaction["spot_price"]           = row[4]
     sell_transaction["datetime"]             = row[0]
     sell_transaction["asset_quantity"]       = float(row[3]) * -1
     sell_transaction["transaction_from"]     = "Coinbase"
     sell_transaction["transaction_to"]       = "USD"
-    sell_transaction["usd_fee"]              = parse_usd_fee(row[8])
-    sell_transaction["notes"]                = row[9]
+    sell_transaction["usd_fee"]              = None
+    sell_transaction["notes"]                = row[8]
 
     buy_transaction = {}
     buy_transaction["transaction_type"]     = "Buy"
-    buy_transaction["asset_quantity"]       = float(row[9].split(" ")[-2])
-    buy_transaction["asset_symbol"]         = row[9].split(" ")[-1]
-    buy_transaction["spot_price"]           = float(row[5]) * float(row[3]) / buy_transaction["asset_quantity"]
+    #Ex: Converted 5.15010367 SNX to 0.62396521 FIL
+    buy_transaction["asset_quantity"]       = float(row[8].split(" ")[-2])
+    buy_transaction["asset_symbol"]         = row[8].split(" ")[-1]
+    # total / buy quantity = spot price
+    buy_transaction["spot_price"]           = float(row[5]) / float(buy_transaction["asset_quantity"])
     buy_transaction["datetime"]             = row[0]
     buy_transaction["transaction_from"]     = "USD"
     buy_transaction["transaction_to"]       = "Coinbase"
-    buy_transaction["usd_fee"]              = None
-    buy_transaction["notes"]                = row[9]
+    buy_transaction["usd_fee"]              = float(row[7]) * -1
+    buy_transaction["notes"]                = row[8]
 
     return [sell_transaction, buy_transaction]
-
-def parse_transaction_type(data):
-    return tools.get_transaction_type(data)
-    
-def parse_usd_fee(data):
-    if data == "" or data == "0" or data == "0.00":
-        return None
-    return float(data) * float(-1)
-
-def parse_transaction_from(row, transaction_type):
-    if transaction_type == "Buy":
-        return "USD"
-    return "Coinbase"
-
-def parse_transaction_to(row, transaction_type):
-    if (
-        transaction_type == "Buy" or
-        transaction_type == "Interest" or
-        transaction_type == "Airdrop"
-    ):
-        return "Coinbase"
-    if transaction_type == "Sell":
-        return "USD"
-    if transaction_type == "Send":
-        #Parse wallet address from notes
-        #Ex: '[Sent 0.09148795 ETH to 0xabcde] -> [0xabcde]'
-        return row[9].split(" ")[-1]
-    return "n/a"
-
-def negative_transaction(value, transaction_type):
-    if transaction_type == "Sell":
-        return float(value) * float(-1)
-    return value
-
-def parse_asset_quantity(value, transaction_type):
-    if transaction_type == "Sell" or transaction_type == "Send":
-        return float(-1) * float(value)
-
-    return value

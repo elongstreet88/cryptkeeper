@@ -1,4 +1,3 @@
-import pandas_datareader as web
 from datetime import datetime, timedelta
 import requests
 

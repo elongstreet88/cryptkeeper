@@ -27,7 +27,7 @@ def create_import_transaction(transaction_type, asset_symbol, spot_price, dateti
             "asset_quantity"    : round(float(asset_quantity), 10),
             "transaction_from"  : transaction_from,
             "transaction_to"    : transaction_to,
-            "usd_fee"           : round(float(usd_fee),10) if usd_fee != "" and usd_fee != None else None,
+            "usd_fee"           : round(float(usd_fee),2) if usd_fee != "" and usd_fee != None and usd_fee != 0 else None,
             "notes"             : notes
         }
         transaction["import_hash"] = get_hash_from_dict(transaction)
