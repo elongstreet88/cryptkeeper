@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.18.0 (Nov 28, 2021)
+
+FEATURES:
+
+ENHANCEMENTS:
+* Moved parsers to core, renamed, and de-coupled from django dependencies
+
+BUG FIXES:
+
+---
+
 ## 0.17.1 (Nov 24, 2021)
 
 FEATURES:
@@ -12,7 +23,6 @@ BUG FIXES:
 * Fixed `./initialize.sh` to actually work
 
 ---
-
 
 ## 0.17.0 (Nov 24, 2021)
 

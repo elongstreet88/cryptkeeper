@@ -1,7 +1,6 @@
 import csv
 import sys
 from io import StringIO
-from ..models import Transaction
 import logging
 from . import tools
 
@@ -27,7 +26,7 @@ def file_matches_importer(file_name, in_memory_file):
 
     return False
 
-def process_transactions_from_file(in_memory_file, user):
+def get_transactions_from_file(in_memory_file):
     #Open up CSV for read
     file = in_memory_file.read().decode('utf-8')
     csv_data = csv.reader(StringIO(file), delimiter=',')
@@ -44,17 +43,16 @@ def process_transactions_from_file(in_memory_file, user):
     }
 
     #Iterate and process each
+    valid_transactions = []
+    invalid_transactions = []
     for row in csv_data:
         try:
-            transactions = process_transactions(row)
-            for transaction in transactions:
-                result = tools.create_import_transaction(**transaction, user=user)
-                results[result] +=1
+            valid_transactions += process_transactions(row)
         except:
+            invalid_transactions += row
             logging.exception(sys.exc_info()[0])
-            results["failed"] +=1
 
-    return results
+    return valid_transactions, invalid_transactions
 
 def process_transactions(row):
     transaction = {}

@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.decorators import api_view, action
 from .models import *
 from io import StringIO
-from .transaction_parsers import tools
+from .core.cryptkeeper import tools as cryptkeeper_tools
 import json
 from .core.crypto_price_finder import crypto_price_finder
 
@@ -46,7 +46,7 @@ class TransactionImporterViewSet(viewsets.ViewSet):
         file        = request.FILES.get('file')
         file_name   = file.name
 
-        results = tools.process_transactions_from_file(
+        results = cryptkeeper_tools.import_transactions_from_file(
             file_name       = file_name, 
             in_memory_file  = file, 
             user            = self.request.user
