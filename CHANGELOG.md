@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.19.0 (Nov 29, 2021)
+
+FEATURES:
+* Added parsers for `crypto.com`, `coinbase pro`, and `celcius`
+
+ENHANCEMENTS:
+
+BUG FIXES:
+* Fixed `recieve` total quantity on model
+
+---
+
 ## 0.18.0 (Nov 28, 2021)
 
 FEATURES:

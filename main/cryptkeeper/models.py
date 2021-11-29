@@ -56,7 +56,8 @@ class Transaction(models.Model):
         # usd_total_no_fee == fee == -$5
 
         if (
-            self.transaction_type == self.TransactionType.SEND or 
+            self.transaction_type == self.TransactionType.SEND or
+            self.transaction_type == self.TransactionType.RECEIVE or 
             self.transaction_type == self.TransactionType.INTEREST or 
             self.transaction_type == self.TransactionType.AIRDROP
         ):

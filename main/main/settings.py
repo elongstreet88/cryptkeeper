@@ -179,7 +179,7 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 50,
     'DATETIME_FORMAT': "%m/%d/%Y %I:%M:%S %p",
     'DATETIME_INPUT_FORMATS': [
-        "%m/%d/%Y %I:%M %p",    #Nice view
+        "%m/%d/%Y %I:%M:%S %p",    #Nice view
         "iso-8601",             #ISO Standard
         "%Y-%m-%d-%H-%M-%S" #Callable from browser without encoding
     ],
