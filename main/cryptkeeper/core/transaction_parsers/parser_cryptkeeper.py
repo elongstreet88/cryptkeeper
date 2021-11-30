@@ -39,7 +39,8 @@ def get_transactions_from_file(in_memory_file):
     results = {
         "created"       : 0,
         "failed"        : 0,
-        "already_exists": 0
+        "already_exists": 0,
+        "updated"       : 0,
     }
 
     #Iterate and process each
@@ -66,6 +67,7 @@ def process_transactions(row):
     transaction["transaction_to"]       = row[8]
     transaction["usd_fee"]              = None if row[5] == "" else float(row[5])
     transaction["notes"]                = row[9]
+    transaction["id"]                   = row[0]
 
     return [transaction]
 

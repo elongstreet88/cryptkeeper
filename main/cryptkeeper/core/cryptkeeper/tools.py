@@ -10,7 +10,7 @@ from io import StringIO
 from ...models import Transaction
 from ..transaction_parsers import tools as importer_parser_tools
 
-def create_import_transaction(transaction_type, asset_symbol, spot_price, datetime, asset_quantity, transaction_from, transaction_to, usd_fee, notes, user):
+def create_import_transaction(transaction_type, asset_symbol, spot_price, datetime, asset_quantity, transaction_from, transaction_to, usd_fee, notes, user, id=None):
     """
     Generic wrapper for creating a transaction back to the database.
     If the transaction already exists, it will NOT create it, but report it as already existing.
@@ -31,40 +31,69 @@ def create_import_transaction(transaction_type, asset_symbol, spot_price, dateti
         }
         transaction["import_hash"] = get_hash_from_dict(transaction)
 
-        #Find the object if it exists
-        exists = Transaction.objects.filter(import_hash=transaction["import_hash"], user=user)
+        existing_id, hash_matches = find_existing_import_transaction(
+            user        = user,
+            import_hash = transaction["import_hash"], 
+            id          = id
+        )
 
-        #Create it it if its missing, skip if it exists
-        if not exists:
+        # A matching hash means no updates, return
+        if hash_matches:
+            return "already_exists"
+
+        if existing_id:
+            #If id was determined, update
+            obj = Transaction.objects.filter(pk=existing_id)
+            obj.update(**transaction)
+            return "updated"
+        else:
+            #If id not determined, create
             Transaction.objects.create(**transaction, user=user)
             return "created"
-        else:
-            return "already_exists"
 
     except:
         logging.exception(sys.exc_info()[0])
         return "failed"
 
-def get_transaction_type(type_name):
-    types = {
-        "Buy": Transaction.TransactionType.BUY,
-        "Sell": Transaction.TransactionType.SELL,
-        "Send": Transaction.TransactionType.SEND,
-        "Coinbase Earn": Transaction.TransactionType.AIRDROP,
-        "Rewards Income": Transaction.TransactionType.INTEREST,
-    }
+def find_existing_import_transaction(user, import_hash, id=None):
+    """
+    Finds an existing transaction based on [import_hash] and [id].
+    It will try both and return the id if found and hash_matches = True if hash matches
+    """
+    #Try to match on Id if provided
+    if id:
+        obj = Transaction.objects.filter(pk=id, user=user)
 
-    if type_name in types:
-        return types[type_name]
+        # Matched id successfully, hash matches
+        if obj and obj[0].import_hash == import_hash:
+            return id, True
+        
+        # Matched id successfully, hash doesn't match
+        if obj:
+            return id, False
 
-    return type_name
+    #Try to match on import_hash alone
+    if not id:
+        obj = Transaction.objects.filter(import_hash=import_hash, user=user)
+
+        # Matched id successfully, hash matches
+        if obj and obj[0].import_hash == import_hash:
+            return id, True
+
+        #matched id successfully
+        if obj:
+            return id, False
+
+    # Did not match any
+    return None, False
 
 def import_transactions_from_file(file_name, in_memory_file, user):
     #Results object
     results = {
         "created"       : 0,
         "failed"        : 0,
-        "already_exists": 0
+        "already_exists": 0,
+        "updated"       : 0,
     }
 
     valid_transactions, invalid_transactions = importer_parser_tools.get_transactions_from_file(

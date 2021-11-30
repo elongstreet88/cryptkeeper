@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.20.0 (Nov 29, 2021)
+
+FEATURES:
+* Added ability to modify cryptkeeper.csv export and merge/match it back on import. This allows modifying locally for bulk operations.
+* `import_hash` exported from datatable now to support this
+
+ENHANCEMENTS:
+
+BUG FIXES:
+
+KNOWN ISSUES:
+* Saving csv in excel wipes seconds from timestamp which causes `updates` to occur and loss of precision. Not a cryptkeeper problem but will probably cause some headaches.
+
+---
+
 ## 0.19.0 (Nov 29, 2021)
 
 FEATURES:

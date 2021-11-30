@@ -23,6 +23,7 @@
                     <th>Total (No Fees)</th>
                     <th>Total (With Fees)</th>
                     <th>Actions</th>
+                    <th>Import Hash</th>
                 </tr>
             </thead>
         </table>
@@ -81,6 +82,7 @@
                 <form id="edit_transaction">
                     <div class="card-body">
                         <input type="hidden" id="edit_id" value="" name="id">
+                        <input type="hidden" id="edit_import_hash" value="" name="import_hash">
                         <div class="form-group">
                             <label>Date and time:</label>
                             <div class="input-group date" id="edit_datetime_popup" data-target-input="nearest">
@@ -317,7 +319,8 @@
                             </div>
                             `
                         }
-                    }
+                    },
+                    { "data": "import_hash", "visible": false }
                 ]
             });
 
@@ -334,6 +337,7 @@
                 $('#edit_transaction_from').val(data.transaction_from);
                 $('#edit_transaction_to').val(data.transaction_to);
                 $('#edit_notes').val(data.notes);
+                $('#edit_import_hash').val(data.import_hash);
                 $('#modal-edit').modal("show");
             });
 

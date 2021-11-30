@@ -40,6 +40,19 @@ def get_transactions_from_file(file_name, in_memory_file):
     if parser_coinbase_pro.file_matches_importer(file_name, in_memory_file):
         return parser_coinbase_pro.get_transactions_from_file(in_memory_file)
 
-
-
     raise Exception(f"Unable to find valid parser for file {file_name}")
+
+def process_missing_spot_price(transaction):
+    # Get price from chain
+    success, spot_price = crypto_price_finder.get_usd_price(
+        datetime        = datetime.fromisoformat(transaction["datetime"]),
+        asset_symbol    = transaction["asset_symbol"]
+    )
+    if success:
+        transaction["spot_price"] = spot_price
+        transaction["notes"]+= " Warning - Unable to determine spot price from import automatically, best effort price added."
+        return [transaction]
+
+    transaction["notes"]+= " Error - Unable to determine spot price from import automatically, please correct manually."
+
+    return [transaction]
