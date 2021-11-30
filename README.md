@@ -27,6 +27,7 @@ The goal of this project is to provide an open source web based portfolio manage
 - Transaction Importers for
   - Blockfi
   - Coinbase
+  - Coinbase Pro
   - Celcius
   - Crypto.com
 - Simple data tables with full export
