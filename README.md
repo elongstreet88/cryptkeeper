@@ -27,8 +27,8 @@ The goal of this project is to provide an open source web based portfolio manage
 - Transaction Importers for
   - Blockfi
   - Coinbase
-  - Celcius (comming soon)
-  - Binance.US (coming soon)
+  - Celcius
+  - Crypto.com
 - Simple data tables with full export
 - Auth on by default (google auth can be turned on, local django auth works fine too)
 - Forever free, always open source
