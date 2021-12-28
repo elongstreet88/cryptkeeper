@@ -112,6 +112,7 @@ def process_transaction_deposit(row):
     transaction["usd_fee"]              = None
     transaction["notes"]                = f"Deposit: {row[1]} {row[0]}."
     #custum for deposit
+    transaction["needs_reviewed"]       = True
     transaction["notes"]                += " Unable to determine [from] field from transaction report. Please correct manually."
 
     if row[0] == "GUSD" or row[0] == "USDC":
@@ -158,6 +159,7 @@ def process_transaction_interest_withdrawal(row):
     transaction["usd_fee"]              = None
     transaction["notes"]                = f"Withdrawal: {row[1]} {row[0]}."
     # Custom for withdrawl
+    transaction["needs_reviewed"]       = True
     transaction["notes"]                += " Error - Unable to determine [to] field from transaction report, please correct manually."
 
     if row[0] == "GUSD" or row[0] == "USDC":

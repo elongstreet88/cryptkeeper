@@ -1,11 +1,15 @@
 from datetime import datetime, timedelta
 import requests
 
-def get_usd_price(asset_symbol, datetime):
+def get_usd_price(asset_symbol, target_time=None):
+    if not target_time:
+        #Move 30 seconds into the past to ensure its not a future price
+        target_time = datetime.utcnow() + timedelta(0, -30)
+
     pair = f"{asset_symbol}-usd"
 
-    start = datetime + timedelta(0,-30) # Backwards 30 seconds
-    end   = datetime + timedelta(0,30) # Forward 30 seconds
+    start = target_time + timedelta(0,-30) # Backwards 30 seconds
+    end   = target_time + timedelta(0,30) # Forward 30 seconds
 
     #Cleanup Format
     start_string = start.strftime('%Y-%m-%dT%H:%M:%S')
@@ -21,7 +25,7 @@ def get_usd_price(asset_symbol, datetime):
         return False, 0
 
     if len(data) == 0:
-        return True, "Not found"
+        return False, "Not found"
 
     price_open = float(data[0][1])
     price_close = float(data[0][2])

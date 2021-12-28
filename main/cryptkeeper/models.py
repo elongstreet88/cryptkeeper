@@ -15,21 +15,18 @@ class Transaction(models.Model):
     transaction_type        = models.CharField(max_length=40,choices=TransactionType.choices)
     usd_fee                 = models.DecimalField(max_digits=19, decimal_places=2, null=True)
     asset_symbol            = models.CharField(max_length=50)
-    spot_price              = models.DecimalField(max_digits=19, decimal_places=10)
+    spot_price              = models.DecimalField(max_digits=19, decimal_places=10, null=True)
     datetime                = models.DateTimeField()
     asset_quantity          = models.DecimalField(max_digits=19, decimal_places=10)
     transaction_from        = models.CharField(max_length=50)
     transaction_to          = models.CharField(max_length=50)
     notes                   = models.CharField(max_length=1000, null=True)
     import_hash             = models.CharField(max_length=100, null=True)
+    needs_reviewed          = models.BooleanField(null=True)
     #calculated fields
     usd_total_no_fees       = models.DecimalField(max_digits=19, decimal_places=2, null=True)
     usd_total_with_fees     = models.DecimalField(max_digits=19, decimal_places=2, null=True)
-
     
-
-    
-
     def save(self, *args, **kwargs):
         self.process_calculated_fields()
         super(Transaction, self).save(*args, **kwargs)

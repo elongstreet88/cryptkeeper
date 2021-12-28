@@ -10,7 +10,7 @@ from io import StringIO
 from ...models import Transaction
 from ..transaction_parsers import tools as importer_parser_tools
 
-def create_import_transaction(transaction_type, asset_symbol, spot_price, datetime, asset_quantity, transaction_from, transaction_to, usd_fee, notes, user, id=None):
+def create_import_transaction(transaction_type, asset_symbol, spot_price, datetime, asset_quantity, transaction_from, transaction_to, usd_fee, notes, user, needs_reviewed=None, id=None):
     """
     Generic wrapper for creating a transaction back to the database.
     If the transaction already exists, it will NOT create it, but report it as already existing.
@@ -27,7 +27,8 @@ def create_import_transaction(transaction_type, asset_symbol, spot_price, dateti
             "transaction_from"  : transaction_from,
             "transaction_to"    : transaction_to,
             "usd_fee"           : round(float(usd_fee),2) if usd_fee != "" and usd_fee != None and usd_fee != 0 else None,
-            "notes"             : notes
+            "notes"             : notes,
+            "needs_reviewed"    : needs_reviewed
         }
         transaction["import_hash"] = get_hash_from_dict(transaction)
 

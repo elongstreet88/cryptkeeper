@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.21.0 (Dec 28, 2021)
+
+FEATURES:
+* Added asset summary API call (ex: `http://localhost:8000/api/asset-info/BTC/`)
+* Added `needs_reviewed` to `transactions` to enable easier review statusing
+* 
+
+ENHANCEMENTS:
+
+BUG FIXES:
+
+---
+
 ## 0.20.0 (Nov 29, 2021)
 
 FEATURES:

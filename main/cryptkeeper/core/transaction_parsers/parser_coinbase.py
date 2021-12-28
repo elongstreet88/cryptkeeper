@@ -85,7 +85,8 @@ def process_transactions_send(row):
     transaction["usd_fee"]              = None
     transaction["notes"]                = row[9]
 
-    #Custom Warning
+    #Needs Reviewed
+    transaction["needs_reviewed"]       = True
     transaction["notes"]               += ". [Warning]: Unable to determine the type of send automatically. This could be a taxable event."
 
     return [transaction]

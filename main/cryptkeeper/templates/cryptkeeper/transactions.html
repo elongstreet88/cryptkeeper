@@ -20,6 +20,7 @@
                     <th>From</th>
                     <th>To</th>
                     <th>Notes</th>
+                    <th>Needs Reviewed</th>
                     <th>Total (No Fees)</th>
                     <th>Total (With Fees)</th>
                     <th>Actions</th>
@@ -198,6 +199,10 @@
                                     placeholder="Notes about transaction">
                             </div>
                         </div>
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="needs_reviewed" id="edit_needs_reviewed"">
+                            <label class="form-check-label" for="needs_reviewed">Needs Reviewed</label>
+                          </div>
                     </div>
                 </form>
             </div>
@@ -303,6 +308,7 @@
                     { "data": "transaction_from" },
                     { "data": "transaction_to" },
                     { "data": "notes" },
+                    { "data": "needs_reviewed" },
                     { "data": "usd_total_no_fees" },
                     { "data": "usd_total_with_fees" },
                     {
@@ -332,11 +338,12 @@
                 $('#edit_transaction_type').val(data.transaction_type);
                 $('#edit_asset_symbol').val(data.asset_symbol);
                 $('#edit_spot_price').val(data.spot_price);
-                $('#usd_fee').val(data.spot_price);
+                $('#edit_usd_fee').val(data.usd_fee);
                 $('#edit_asset_quantity').val(data.asset_quantity);
                 $('#edit_transaction_from').val(data.transaction_from);
                 $('#edit_transaction_to').val(data.transaction_to);
                 $('#edit_notes').val(data.notes);
+                $('#edit_needs_reviewed').prop( "checked", data.needs_reviewed );
                 $('#edit_import_hash').val(data.import_hash);
                 $('#modal-edit').modal("show");
             });

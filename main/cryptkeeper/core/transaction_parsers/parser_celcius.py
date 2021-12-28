@@ -54,7 +54,7 @@ def process_transactions_deposit(row):
     transaction["transaction_type"]     = "Buy"
     transaction["asset_symbol"]         = row[3]
     # usd_value/coin ammount
-    transaction["spot_price"]           = float(row[5]) / float(row[4])
+    transaction["spot_price"]           = 0
     transaction["datetime"]             = row[1]
     transaction["asset_quantity"]       = row[4]
     transaction["transaction_from"]     = "USD"
@@ -62,7 +62,10 @@ def process_transactions_deposit(row):
     transaction["usd_fee"]              = None
     transaction["notes"]                = f"Deposit - [{row[0]}]."
 
+    #Needs Reviewed
+    transaction["needs_reviewed"]       = True
     transaction["notes"]                += f" [Error] - Unable to determine if deposit transaction is 'buy' or 'recieve'. Assuming it is a 'buy'. Adjust manually if it is not."
+    transaction["notes"]                += f" [Error] - Celcius spot prices don't match actuals, enter spot price from email manually"
 
     return [transaction]
 
@@ -93,6 +96,8 @@ def process_transactions_withdrawal(row):
     transaction["usd_fee"]              = None
     transaction["notes"]                = f"Withdrawal - [{row[0]}]."
 
+    #Needs Reviewed
+    transaction["needs_reviewed"]       = True
     transaction["notes"]                += f" [Error] - Unable to determine send address automatically. Please update manually."
 
     return [transaction]

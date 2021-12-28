@@ -126,6 +126,8 @@ def process_transactions_deposit(row):
     transaction["usd_fee"]              = None
     transaction["notes"]                = f"[{row[9]}] - {row[1]}"
 
+    #Needs Reviewed
+    transaction["needs_reviewed"]       = True
     transaction["notes"]                += f". [Error] - Unable to determine sending address. Please correct manually."
 
     return [transaction]

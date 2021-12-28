@@ -7,6 +7,7 @@ router = routers.DefaultRouter()
 router.register(r'transactions', api.TransactionViewSet)
 router.register(r'transaction-importer', api.TransactionImporterViewSet, basename='transaction-importer')
 router.register(r'spot-price', api.SpotPriceViewSet, basename='spot-price')
+router.register(r'asset-info', api.AssetInfoViewSet, basename='asset-info')
 
 urlpatterns = [
     path('', views.index, name='index'),

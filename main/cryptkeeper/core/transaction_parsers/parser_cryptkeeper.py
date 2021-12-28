@@ -68,6 +68,7 @@ def process_transactions(row):
     transaction["usd_fee"]              = None if row[5] == "" else float(row[5])
     transaction["notes"]                = row[9]
     transaction["id"]                   = row[0]
+    transaction["needs_reviewed"]       = bool(row[10])
 
     return [transaction]
 
