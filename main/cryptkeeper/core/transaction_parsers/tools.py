@@ -44,13 +44,13 @@ def get_transactions_from_file(file_name, in_memory_file):
 
 def process_missing_spot_price(transaction):
     # Get price from chain
-    success, spot_price = crypto_price_finder.get_usd_price(
+    price_info = crypto_price_finder.get_usd_price(
         target_time     = datetime.fromisoformat(transaction["datetime"]),
         asset_symbol    = transaction["asset_symbol"]
     )
     
-    if success:
-        transaction["spot_price"] = spot_price
+    if price_info["success"]:
+        transaction["spot_price"] = price_info["spot_price"]
         transaction["notes"]+= " Warning - Unable to determine spot price from import automatically, best effort price added."
     else:
         transaction["needs_reviewed"] = True

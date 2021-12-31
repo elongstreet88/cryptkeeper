@@ -1,35 +1,22 @@
-from datetime import datetime, timedelta
-import requests
+from . import coinbase, coingecko
+def get_usd_price(asset_symbol, exchange="coinbase", target_time=None) -> dict:
+    """Provides a wrapper for exchange lookups. Defaults to coinbase since they support historical lookups without API key"""
 
-def get_usd_price(asset_symbol, target_time=None):
-    if not target_time:
-        #Move 30 seconds into the past to ensure its not a future price
-        target_time = datetime.utcnow() + timedelta(0, -30)
+    # Find the exchange provided
+    match exchange:
+        case "coinbase":
+            return coinbase.get_usd_price(asset_symbol=asset_symbol, target_time=target_time)
 
-    pair = f"{asset_symbol}-usd"
+        case "coingecko":
+            if target_time:
+                return {
+                    "message" : "Coingecko does not support historical at this time",
+                    "success" : False
+                }
+            return coingecko.get_usd_price_current(asset_symbol=asset_symbol)
 
-    start = target_time + timedelta(0,-30) # Backwards 30 seconds
-    end   = target_time + timedelta(0,30) # Forward 30 seconds
-
-    #Cleanup Format
-    start_string = start.strftime('%Y-%m-%dT%H:%M:%S')
-    end_string   = end.strftime('%Y-%m-%dT%H:%M:%S')
-
-    #Ex: https://api.exchange.coinbase.com/products/btc-usd/candles?granularity=60&start=2020-04-30%2015:15:00&end=2020-04-30%2015:16:00
-    url = f"https://api.exchange.coinbase.com/products/{pair}/candles?granularity=60&start={start_string}&end={end_string}"
-    headers = {"Accept": "application/json"}
-    response = requests.request("GET", url, headers=headers)
-    data = response.json()
-
-    if response.status_code != 200:
-        return False, 0
-
-    if len(data) == 0:
-        return False, "Not found"
-
-    price_open = float(data[0][1])
-    price_close = float(data[0][2])
-
-    spot_price = float((price_open + price_close) / 2)
-
-    return True, spot_price
+        case _:
+            return {
+                    "message" : "Exchange not supported at this time",
+                    "success" : False
+                }

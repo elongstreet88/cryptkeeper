@@ -1,11 +1,24 @@
 # Changelog
 
+## 0.22.0 (Dec 30, 2021)
+
+FEATURES:
+* Upgraded support to python 3.10
+* Refactor importers
+* Add `pytest` and tests finally!
+* home dashboard with realtime prices and aggregate data!
+
+ENHANCEMENTS:
+
+BUG FIXES:
+
+---
+
 ## 0.21.0 (Dec 28, 2021)
 
 FEATURES:
 * Added asset summary API call (ex: `http://localhost:8000/api/asset-info/BTC/`)
 * Added `needs_reviewed` to `transactions` to enable easier review statusing
-* 
 
 ENHANCEMENTS:
 

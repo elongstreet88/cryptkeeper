@@ -1,18 +1,21 @@
-from rest_framework import routers, serializers, viewsets, status, permissions, generics, mixins
+from django.db.models.aggregates import Count
+from django.db.models.fields import FloatField
+from rest_framework import serializers, viewsets, permissions
 from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework.decorators import api_view, action
-from .models import *
-from io import StringIO
-from .core.cryptkeeper import tools as cryptkeeper_tools
+from rest_framework.decorators import action
 import json
+from django.db.models import Sum, Q, F
+from django.db.models.functions import Coalesce, Abs
+from django.core import serializers as django_serializer
+from django.http import JsonResponse
+from .core.cryptkeeper import tools as cryptkeeper_tools
 from .core.crypto_price_finder import crypto_price_finder
-from django.db.models import Sum
-from datetime import datetime,timezone
+from .models import *
 
-### Transactions ###
 
-# Serializers define the API representation.
+#
+# Transactions
+# 
 class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction
@@ -24,7 +27,6 @@ class TransactionSerializer(serializers.ModelSerializer):
         transaction.save()
         return transaction
 
-# ViewSets define the view behavior.
 class TransactionViewSet(viewsets.ModelViewSet):
     serializer_class = TransactionSerializer
     queryset = Transaction.objects.all()
@@ -33,7 +35,9 @@ class TransactionViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return Transaction.objects.filter(user=self.request.user)
 
-### File Importer ###
+#
+# File Importer
+#
 class TransactionImporterSerializer(serializers.Serializer):
     file = serializers.FileField()
 
@@ -56,7 +60,9 @@ class TransactionImporterViewSet(viewsets.ViewSet):
 
         return Response(json.dumps(results))
 
-### Spot Price ###
+#
+# Spot Price
+#
 class SpotPriceSerializer(serializers.Serializer):
     asset_symbol = serializers.CharField()
     datetime     = serializers.DateTimeField(format="%Y-%m-%d-%H:%M:%S")
@@ -74,56 +80,40 @@ class SpotPriceViewSet(viewsets.ViewSet):
         serializer = SpotPriceSerializer(data={'asset_symbol': pk, 'datetime': datetime})
         serializer.is_valid(raise_exception=True)
 
-        success, price = crypto_price_finder.get_usd_price(
+        price_info = crypto_price_finder.get_usd_price(
             target_time     = serializer.validated_data["datetime"],
             asset_symbol    = serializer.validated_data["asset_symbol"]
         )
 
-        if not success:
+        if not price_info["success"]:
             return Response("Request could not be completed.", status=400)
         
-        return Response(price)
+        return Response(price_info)
 
-### Spot Price ###
+#
+# Asset Info
+# 
 class AssetInfoViewSet(viewsets.ViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def list(self, request):
-        asset_symbols = Transaction.objects.filter(user=request.user).values('asset_symbol').distinct()
-        return Response(asset_symbols)
+        asset_transactions = Transaction.objects                                                                                     \
+            .filter(user=request.user)                                                                                               \
+            .values("asset_symbol")                                                                                                  \
+            .annotate(total_asset_quantity             = Sum("asset_quantity"))                                                      \
+            .annotate(total_asset_quantity_buy         = Sum("asset_quantity"           , filter=Q(transaction_type="Buy")))         \
+            .annotate(total_asset_quantity_sell        = Sum("asset_quantity"           , filter=Q(transaction_type="Sell")))        \
+            .annotate(total_asset_quantity_interest    = Sum("asset_quantity"           , filter=Q(transaction_type="Interest")))    \
+            .annotate(total_asset_quantity_airdrop     = Sum("asset_quantity"           , filter=Q(transaction_type="Airdrop")))     \
+            .annotate(total_usd_buy                    = Sum("usd_total_with_fees"      , filter=Q(transaction_type="Buy")))         \
+            .annotate(total_usd_sell                   = Sum("usd_total_with_fees"      , filter=Q(transaction_type="Sell")))        \
+            .annotate(total_transacted_usd             = Sum("usd_total_with_fees"))                                                 \
+            .annotate(total_transactions               = Count("usd_total_with_fees"))                                               \
+            .annotate(average_price_buy                = Abs(F("total_usd_buy") / F("total_asset_quantity_buy")))
+
+        data = list(asset_transactions)
+        return Response(data)
 
     #ex: http://localhost:8000/api/asset-info/btc/
     def retrieve(self, request, pk=None):
-        asset_symbol = pk.upper()
-        asset_transactions = Transaction.objects.filter(asset_symbol=asset_symbol, user=request.user) & (
-            Transaction.objects.filter(transaction_type="Buy") |
-            Transaction.objects.filter(transaction_type="Sell")
-        )
-
-        # Get spot price
-        success, current_spot_price = crypto_price_finder.get_usd_price(
-            asset_symbol    = asset_symbol
-        )
-
-        #Get totals
-        total_asset_quantity        = float(asset_transactions.aggregate(Sum('asset_quantity'))["asset_quantity__sum"])
-        total_active_invested       = float(asset_transactions.aggregate(Sum('usd_total_with_fees'))["usd_total_with_fees__sum"])
-
-        # Calculate values based on spot price
-        if success:
-            current_asset_value             = float(total_asset_quantity or 0) * float(current_spot_price or 0)
-            current_unrealized_profit_usd   = current_asset_value + float(total_active_invested or 0)
-        else:
-            current_asset_value = current_unrealized_profit_usd = 0
-
-        result = {
-            "asset_symbol"                          : asset_symbol,
-            "total_asset_quantity"                  : total_asset_quantity,
-            "total_active_invested"                 : total_active_invested,
-            "current_spot_price"                    : current_spot_price,
-            "current_asset_value"                   : current_asset_value,
-            "current_unrealized_profit_usd"         : current_unrealized_profit_usd,
-            "current_unrealized_profit_percentage"  : round(float(current_asset_value/abs(total_active_invested)), 2)
-        }
-
-        return Response(result)
+        return Response([])

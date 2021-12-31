@@ -267,11 +267,10 @@
                     style: 'multi+shift',
                     selector: 'td:not(:last-child)'
                 },
-                pageLength: 25,
+                scrollX: true,
+                pageLength: 10,
                 deferRender: true,
                 buttons: [
-                    'csv',
-                    'excel',
                     'selectAll',
                     'selectNone',
                     {
@@ -286,13 +285,13 @@
                     },
                     {
                         "extend": 'csv',
-                        "text": 'CSV (All Records)',
+                        "text": 'CSV',
                         "titleAttr": 'CSV',                               
                         "action": newexportaction
                     },
                     {
                         "extend": 'excel',
-                        "text": 'Excel (All Records)',
+                        "text": 'Excel',
                         "titleAttr": 'Excel',                               
                         "action": newexportaction
                     },
